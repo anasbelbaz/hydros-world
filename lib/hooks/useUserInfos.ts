@@ -82,11 +82,6 @@ const HydrosNFTSaleABI = parseAbi([
   "function isWhitelisted(address account, bytes32[] calldata proof) view returns (bool)",
 ]) as Abi;
 
-// Keys for query caching
-const QUERY_KEYS = {
-  userBalance: (address: string) => ["userBalance", address],
-};
-
 export interface UserInfos {
   nftBalance: bigint;
   whitelistMinted: bigint;
@@ -98,7 +93,7 @@ export function useUserInfos() {
   const { address, isConnected } = useAccount();
 
   return useQuery({
-    queryKey: QUERY_KEYS.userBalance(address || "0x"),
+    queryKey: ["userInfos", address, isConnected],
     queryFn: async (): Promise<UserInfos> => {
       if (!address || !isConnected) {
         return {

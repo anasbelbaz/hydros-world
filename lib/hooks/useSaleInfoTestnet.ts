@@ -22,11 +22,6 @@ const HydrosNFTSaleABI = parseAbi([
   "function getUnrevealedTokens(address owner) external view returns (uint256[] memory)",
 ]) as Abi;
 
-// Keys for query caching
-const QUERY_KEYS = {
-  saleInfoTestnet: ["saleInfoTestnet"],
-};
-
 // Extended SalesInfo interface to include price step
 export interface ExtendedSalesInfo extends SalesInfo {
   priceStep: bigint;
@@ -37,8 +32,9 @@ export interface ExtendedSalesInfo extends SalesInfo {
 
 export function useSaleInfoTestnet() {
   const { address } = useAccount();
+
   return useQuery({
-    queryKey: QUERY_KEYS.saleInfoTestnet,
+    queryKey: ["saleInfoTestnet", address],
     queryFn: async (): Promise<ExtendedSalesInfo | undefined> => {
       try {
         // Make individual contract calls instead of using multicall

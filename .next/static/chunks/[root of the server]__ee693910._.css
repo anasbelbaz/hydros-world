@@ -578,10 +578,6 @@
     position: relative;
   }
 
-  .static {
-    position: static;
-  }
-
   .-inset-6 {
     inset: calc(var(--spacing) * -6);
   }
@@ -778,10 +774,6 @@
     display: block;
   }
 
-  .contents {
-    display: contents;
-  }
-
   .flex {
     display: flex;
   }
@@ -794,20 +786,12 @@
     display: none;
   }
 
-  .inline {
-    display: inline;
-  }
-
   .inline-block {
     display: inline-block;
   }
 
   .inline-flex {
     display: inline-flex;
-  }
-
-  .table {
-    display: table;
   }
 
   .aspect-square {
@@ -1890,14 +1874,6 @@
     text-transform: uppercase;
   }
 
-  .italic {
-    font-style: italic;
-  }
-
-  .underline {
-    text-decoration-line: underline;
-  }
-
   .underline-offset-4 {
     text-underline-offset: 4px;
   }
@@ -2042,10 +2018,6 @@
   .outline-none {
     --tw-outline-style: none;
     outline-style: none;
-  }
-
-  .running {
-    animation-play-state: running;
   }
 
   @media (hover: hover) {

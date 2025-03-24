@@ -7,6 +7,7 @@ import { HYDROS_CONTRACT_ADDRESS } from "../config";
 import { publicClient } from "../client";
 import { Abi, Client, MulticallResults, parseAbi } from "viem";
 import { multicall } from "viem/actions";
+import { useAccount } from "wagmi";
 
 // Define ABI instead of importing JSON to ensure proper TypeScript typing
 const HydrosNFTSaleABI = parseAbi([
@@ -19,14 +20,10 @@ const HydrosNFTSaleABI = parseAbi([
   "function revealEnabled() view returns (bool)",
 ]) as Abi;
 
-// Keys for query caching
-const QUERY_KEYS = {
-  saleInfo: ["saleInfo"],
-};
-
 export function useSaleInfo() {
+  const { address } = useAccount();
   return useQuery({
-    queryKey: QUERY_KEYS.saleInfo,
+    queryKey: ["saleInfo", address],
     queryFn: async (): Promise<SalesInfo> => {
       try {
         // Use multicall to batch all contract reads into a single request

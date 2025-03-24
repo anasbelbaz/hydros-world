@@ -1,0 +1,24 @@
+# Netlify configuration file
+[build]
+  # Directory to publish (the build output)
+  publish = ".next"
+  # Build command
+  command = "bun run build"
+
+# Environment variables
+[build.environment]
+  # Set Node.js version
+  NODE_VERSION = "18"
+  # Use Bun instead of npm
+  NPM_FLAGS = "--bun"
+  # Contract address
+  NEXT_PUBLIC_HYDROS_NFT_ADDRESS = "0xFAAFF1cbA63F772Ba24E8e8A6193a80fd49e94d0"
+  # RPC URL
+  NEXT_PUBLIC_RPC_URL = "https://rpc.hyperliquid-testnet.xyz/evm"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

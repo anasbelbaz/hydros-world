@@ -1,5 +1,4 @@
 "use client";
-//@ts-nocheck
 
 import { useQuery } from "@tanstack/react-query";
 import { SalesInfo, SalePhase } from "../abi/types";

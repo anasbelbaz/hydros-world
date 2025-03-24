@@ -79,7 +79,7 @@ export const ENV = {
   // NFT related
   HYDROS_NFT_ADDRESS: getEnv(
     "NEXT_PUBLIC_HYDROS_NFT_ADDRESS",
-    "0x61a7e0918d6c0591a0423d904Aeb401DC467E6D2"
+    "0xa0EC58a2cBf6bCAF653f5a42e8aBa6967807c8Da"
   ),
 
   // Network related
@@ -92,6 +92,12 @@ export const ENV = {
     "https://testnet.purrsec.com/tx/"
   ),
   CHAIN_ID: getEnvNumber("NEXT_PUBLIC_CHAIN_ID", 998),
+
+  // WalletConnect
+  WALLET_CONNECT_PROJECT_ID: getEnv(
+    "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID",
+    "a03353371f008832b7e0c8d3f508bd1c" // This is a placeholder - replace with your actual project ID
+  ),
 
   // Access control
   WHITELIST_ADDRESSES: getEnvArray("NEXT_PUBLIC_WHITELIST_ADDRESSES", [

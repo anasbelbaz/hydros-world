@@ -28,7 +28,7 @@ const QUERY_KEYS = {
 };
 
 // Extended SalesInfo interface to include price step
-interface ExtendedSalesInfo extends SalesInfo {
+export interface ExtendedSalesInfo extends SalesInfo {
   priceStep: bigint;
   currentPrice: bigint;
   priceUpdateInterval: bigint;

@@ -4,25 +4,32 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { formatUnits } from "viem";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { PriceTable } from "@/components/PriceTable";
-import { PHASE_AUCTION, PHASE_WHITELIST, SalesInfo } from "@/lib/abi/types";
-import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
+import { PHASE_AUCTION, PHASE_WHITELIST } from "@/lib/abi/types";
+import {
+  ExtendedSalesInfo,
+  useSaleInfoTestnet,
+} from "@/lib/hooks/useSaleInfoTestnet";
 import { useMint } from "@/lib/hooks/useMint";
 import { Button } from "@/components/ui/button";
 import { HypeLogo } from "@/lib/utils/utils";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { Counter } from "@/components/Counter";
-import { useQueryClient } from "@tanstack/react-query";
+import AuctionNotStarted from "@/components/AuctionNotStarted";
+import { useUserInfos } from "@/lib/hooks/useUserInfos";
+import TimeRemaining from "@/components/TimeRemaining";
 
 export default function MintPage() {
   const queryClient = useQueryClient();
+  const { data: userInfos } = useUserInfos();
+  const { data: saleInfo, refetch, isRefetching } = useSaleInfoTestnet();
 
   const [mintAmount, setMintAmount] = useState(1);
   const [mintProgress, setMintProgress] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
-  const { data: saleInfo, refetch, isRefetching } = useSaleInfoTestnet();
   const { isConnected } = useAccount();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
@@ -170,6 +177,14 @@ export default function MintPage() {
     }
   };
 
+  if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
+    return <AuctionNotStarted />;
+  }
+
+  if (!userInfos?.isWhitelisted && saleInfo?.currentPhase !== PHASE_AUCTION) {
+    return <AuctionNotStarted />;
+  }
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 flex flex-col pt-20 relative pb-5">
       {/* Tables and Countdown */}
@@ -288,12 +303,14 @@ export default function MintPage() {
 
 type TimerProps = {
   getNftLeftPercentage: () => number;
-  saleInfo?: SalesInfo;
+  saleInfo?: ExtendedSalesInfo;
   refetch: () => void;
 };
 
 function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
-  const [timeUntilPriceUpdate, setTimeUntilPriceUpdate] = useState(60);
+  const [timeUntilPriceUpdate, setTimeUntilPriceUpdate] = useState(
+    Number(saleInfo?.priceUpdateInterval)
+  );
 
   // Calculate the percentage of time remaining for the timer
   const timePercentage = (timeUntilPriceUpdate / 60) * 100;
@@ -308,7 +325,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           // Trigger refetch to get updated price
           refetch();
           // Reset to 60 seconds
-          return 60;
+          return Number(saleInfo?.priceUpdateInterval);
         }
         // Otherwise just count down
         return prev - 1;
@@ -317,7 +334,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
-  }, [refetch]); // Only depend on refetch, not timeUntilPriceUpdate
+  }, [refetch, saleInfo?.priceUpdateInterval]); // Only depend on refetch, not timeUntilPriceUpdate
 
   return (
     <div className="text-center relative overflow-visible">
@@ -416,12 +433,27 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
           {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-            <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-              PRICE UPDATE
-            </h3>
-            <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
-              {timeUntilPriceUpdate}s
-            </p>
+            {saleInfo?.currentPhase !== PHASE_WHITELIST && (
+              <>
+                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                  PRICE UPDATE
+                </h3>
+                <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
+                  {timeUntilPriceUpdate}s
+                </p>
+              </>
+            )}
+
+            {saleInfo?.currentPhase === PHASE_WHITELIST && (
+              <>
+                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                  PUBLIC SALE STARTS IN
+                </h3>
+                <TimeRemaining
+                  startTime={saleInfo.auctionSaleConfig.startTime}
+                />
+              </>
+            )}
 
             <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
 

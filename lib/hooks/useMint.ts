@@ -1,10 +1,11 @@
 "use client";
 
-import { useWalletClient, useWriteContract } from "wagmi";
+import { useAccount, useWalletClient, useWriteContract } from "wagmi";
 import { HYDROS_CONTRACT_ADDRESS } from "../config";
 import { PHASE_WHITELIST, PHASE_AUCTION } from "../abi/types";
 import { Abi, parseAbi } from "viem";
 import { useSaleInfoTestnet } from "./useSaleInfoTestnet";
+import { generateMerkleProof } from "./useUserInfos";
 
 // Define contract ABI
 const HydrosNFTSaleABI = parseAbi([
@@ -23,6 +24,7 @@ export interface MintParams {
 export function useMint() {
   const { data: saleInfo } = useSaleInfoTestnet();
   const { data: waleltClient } = useWalletClient();
+  const { address } = useAccount();
 
   // Use writeContract hook (Wagmi v2)
   const { writeContractAsync, isPending } = useWriteContract();
@@ -49,13 +51,12 @@ export function useMint() {
       if (saleInfo.currentPhase === PHASE_WHITELIST) {
         // For whitelist phase, we need a merkle proof
         // In a real implementation, you would fetch this from backend
-        const merkleProof: `0x${string}`[] = [];
 
         tx = await writeContractAsync({
           address: HYDROS_CONTRACT_ADDRESS,
           abi: HydrosNFTSaleABI,
           functionName: "whitelistMint",
-          args: [BigInt(quantity), merkleProof],
+          args: [BigInt(quantity), generateMerkleProof(address)],
           value,
           chain: waleltClient.chain,
           account: waleltClient.account,

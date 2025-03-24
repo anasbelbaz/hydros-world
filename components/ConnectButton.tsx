@@ -8,7 +8,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 import { Button } from "./ui/button";
 import { HypeLogo } from "@/lib/utils/utils";
-import { useUserBalance } from "@/lib/hooks/useUserBalance";
+import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import { Avatar } from "@/lib/utils/utils";
 import { ENV } from "@/lib/env";
 
@@ -16,7 +16,7 @@ export function ConnectButton() {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { address } = useAccount();
-  const { data: userBalance } = useUserBalance();
+  const { data: userInfos } = useUserInfos();
 
   // Handle window resize to determine if mobile view should be used
   useEffect(() => {
@@ -109,9 +109,9 @@ export function ConnectButton() {
                         className="text-[#98FCE4] font-herculanum text-xs lg:text-sm"
                         style={{ fontFamily: "'Herculanum', sans-serif" }}
                       >
-                        {userBalance?.nativeBalance
+                        {userInfos?.nativeBalance
                           ? Number(
-                              formatUnits(userBalance.nativeBalance, 18)
+                              formatUnits(userInfos.nativeBalance, 18)
                             ).toFixed(2)
                           : "0.00"}
                       </span>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { formatUnits } from "viem";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { PriceTable } from "@/components/PriceTable";
 import { PHASE_AUCTION, PHASE_WHITELIST, SalesInfo } from "@/lib/abi/types";
@@ -13,11 +14,14 @@ import { Button } from "@/components/ui/button";
 import { HypeLogo } from "@/lib/utils/utils";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { Counter } from "@/components/Counter";
-import { useQueryClient } from "@tanstack/react-query";
+import AuctionNotStarted from "@/components/AuctionNotStarted";
+import { useUserInfos } from "@/lib/hooks/useUserInfos";
+import TimeRemaining from "@/components/TimeRemaining";
 
 export default function MintPage() {
   const queryClient = useQueryClient();
 
+  const { data: userInfos } = useUserInfos();
   const [mintAmount, setMintAmount] = useState(1);
   const [mintProgress, setMintProgress] = useState<
     "idle" | "loading" | "success" | "error"
@@ -169,6 +173,14 @@ export default function MintPage() {
       setMintProgress("error");
     }
   };
+
+  if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
+    return <AuctionNotStarted />;
+  }
+
+  if (saleInfo?.currentPhase !== PHASE_AUCTION) {
+    return <AuctionNotStarted />;
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 flex flex-col pt-20 relative pb-5">
@@ -416,12 +428,24 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
           {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-            <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-              PRICE UPDATE
-            </h3>
-            <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
-              {timeUntilPriceUpdate}s
-            </p>
+            {saleInfo?.currentPhase !== PHASE_WHITELIST && (
+              <>
+                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                  PRICE UPDATE
+                </h3>
+                <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
+                  {timeUntilPriceUpdate}s
+                </p>
+              </>
+            )}
+
+            {saleInfo?.currentPhase === PHASE_WHITELIST && (
+              <>
+                <TimeRemaining
+                  startTime={saleInfo.whitelistSaleConfig.startTime}
+                />
+              </>
+            )}
 
             <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
 

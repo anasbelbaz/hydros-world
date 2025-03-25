@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { useReveal } from "@/lib/hooks/useReveal";
 import { NFTCard } from "@/components/NFTCard";
-import RevealDialog from "@/components/RevealDialog";
 import {
   fetchOwnedTokens,
   fetchTokenURIs,
@@ -36,14 +35,6 @@ const ClientOnly = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// NFT type definition
-type NFT = {
-  id: number;
-  name: string;
-  image: string;
-  attributes: { trait_type: string; value: string }[];
-};
-
 export default function CollectionPage() {
   const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
@@ -58,11 +49,6 @@ export default function CollectionPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const { getTokenURI } = useReveal();
-
-  // RevealDialog state
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [revealedNFTs, setRevealedNFTs] = useState<NFT[]>([]);
-  const [currentNFT, setCurrentNFT] = useState<NFT | null>(null);
 
   // Fetch owned tokens when address changes
   useEffect(() => {
@@ -136,91 +122,6 @@ export default function CollectionPage() {
     };
   }, [loadMoreTokens]);
 
-  // Function to handle NFT card click
-  const handleNFTClick = async (tokenId: number) => {
-    try {
-      // Get the token URI and metadata
-      const uri = tokenURIs[tokenId];
-      if (!uri) return;
-
-      // Convert IPFS URI to HTTP URL if needed
-      let httpURI = uri;
-      if (uri.startsWith("ipfs://")) {
-        httpURI = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
-      }
-
-      // Fetch the metadata
-      const response = await fetch(httpURI);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch metadata for token ${tokenId}`);
-      }
-
-      const metadata = await response.json();
-
-      // Convert IPFS image URL to HTTP URL if needed
-      let imageUrl = metadata.image;
-      if (imageUrl && imageUrl.startsWith("ipfs://")) {
-        imageUrl = imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/");
-      }
-
-      // Create the NFT object
-      const nft: NFT = {
-        id: tokenId,
-        name: metadata.name || `Hydro #${tokenId}`,
-        image: imageUrl,
-        attributes: metadata.attributes || [],
-      };
-
-      // Set the revealed NFTs array with just this one NFT
-      setRevealedNFTs([nft]);
-      setCurrentNFT(nft);
-      setDialogOpen(true);
-    } catch (error) {
-      console.error("Error fetching NFT metadata:", error);
-    }
-  };
-
-  // Navigation functions for RevealDialog
-  const navigateToNext = () => {
-    if (!currentNFT || revealedNFTs.length <= 1) return;
-
-    const currentIndex = revealedNFTs.findIndex(
-      (nft) => nft.id === currentNFT.id
-    );
-    const nextIndex = (currentIndex + 1) % revealedNFTs.length;
-    setCurrentNFT(revealedNFTs[nextIndex]);
-  };
-
-  const navigateToPrev = () => {
-    if (!currentNFT || revealedNFTs.length <= 1) return;
-
-    const currentIndex = revealedNFTs.findIndex(
-      (nft) => nft.id === currentNFT.id
-    );
-    const prevIndex =
-      (currentIndex - 1 + revealedNFTs.length) % revealedNFTs.length;
-    setCurrentNFT(revealedNFTs[prevIndex]);
-  };
-
-  // Check if navigation is possible
-  const canNavigateNext = () => {
-    if (!currentNFT || revealedNFTs.length <= 1) return false;
-
-    const currentIndex = revealedNFTs.findIndex(
-      (nft) => nft.id === currentNFT.id
-    );
-    return currentIndex < revealedNFTs.length - 1;
-  };
-
-  const canNavigatePrev = () => {
-    if (!currentNFT || revealedNFTs.length <= 1) return false;
-
-    const currentIndex = revealedNFTs.findIndex(
-      (nft) => nft.id === currentNFT.id
-    );
-    return currentIndex > 0;
-  };
-
   return (
     <ClientOnly>
       <div className="w-full mx-auto px-4 pt-5 pb-2">
@@ -264,11 +165,7 @@ export default function CollectionPage() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-6 gap-5">
                 {displayedTokens.map((tokenId) => (
-                  <div
-                    key={tokenId}
-                    className="flex justify-center cursor-pointer"
-                    onClick={() => handleNFTClick(tokenId)}
-                  >
+                  <div key={tokenId} className="flex justify-center">
                     <NFTCard tokenId={tokenId} tokenURI={tokenURIs[tokenId]} />
                   </div>
                 ))}
@@ -295,21 +192,6 @@ export default function CollectionPage() {
           )}
         </MotionDiv>
       </div>
-
-      {/* RevealDialog for viewing NFT details */}
-      {currentNFT && (
-        <RevealDialog
-          dialogOpen={dialogOpen}
-          setDialogOpen={setDialogOpen}
-          revealedNFTs={revealedNFTs}
-          currentNFT={currentNFT}
-          setCurrentNFT={setCurrentNFT}
-          navigateToPrev={navigateToPrev}
-          navigateToNext={navigateToNext}
-          canNavigatePrev={canNavigatePrev}
-          canNavigateNext={canNavigateNext}
-        />
-      )}
     </ClientOnly>
   );
 }

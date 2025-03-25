@@ -194,16 +194,13 @@ export default function MintPage() {
         onSuccess: () => {
           // Success handled by useEffect with transaction confirmation
         },
-        onError: (error) => {
+        onError: () => {
           toast.dismiss(loadingToast);
           toast.error(
             <div className="flex flex-col gap-1">
               <h3 className="font-herculanum">MINT FAILED</h3>
               <p className="text-sm">
                 There was an error during the minting process.
-              </p>
-              <p className="text-xs text-red-300 mt-1">
-                {error?.message || "Unknown error"}
               </p>
             </div>
           );
@@ -228,9 +225,6 @@ export default function MintPage() {
           <h3 className="font-herculanum">MINT FAILED</h3>
           <p className="text-sm">
             There was an error during the minting process.
-          </p>
-          <p className="text-xs text-red-300 mt-1">
-            {err instanceof Error ? err.message : "Unknown error"}
           </p>
         </div>
       );

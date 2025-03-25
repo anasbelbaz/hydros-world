@@ -10,6 +10,7 @@ import { useReveal } from "@/lib/hooks/useReveal";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 import { NFTMetadata } from "@/lib/types";
 import RevealDialog from "@/components/RevealDialog";
+import { toast } from "sonner";
 
 export default function RevealPage() {
   const [revealAmount, setRevealAmount] = useState(1);
@@ -219,7 +220,7 @@ export default function RevealPage() {
 
   const getMaxRevealAmount = () => {
     // Return the number of unrevealed tokens the user has
-    return tokenIds.length;
+    return tokenIds.length < 30 ? tokenIds.length : 30;
   };
 
   // Function to filter out already revealed tokens
@@ -281,10 +282,31 @@ export default function RevealPage() {
         onSuccess: (hash) => {
           // Set the transaction hash for monitoring confirmation
           setTxHash(hash);
+          toast.success(
+            <div className="flex flex-col gap-1">
+              <h3 className="font-herculanum">REVEAL SUCCESSFUL!</h3>
+              <a
+                href={`https://testnet.purrsec.com/tx/${hash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs underline mt-1 text-primary hover:text-primary/80"
+              >
+                View transaction
+              </a>
+            </div>
+          );
         },
         onError: (err) => {
           console.error("Reveal error:", err);
           setIsRevealing(false);
+          toast.error(
+            <div className="flex flex-col gap-1">
+              <h3 className="font-herculanum">MINT FAILED</h3>
+              <p className="text-sm">
+                There was an error during the minting process.
+              </p>
+            </div>
+          );
         },
       });
 

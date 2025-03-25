@@ -520,11 +520,6 @@
     height: calc(var(--spacing) * 9);
   }
 
-  .size-\[2px\] {
-    width: 2px;
-    height: 2px;
-  }
-
   .h-0\.5 {
     height: calc(var(--spacing) * .5);
   }
@@ -1353,14 +1348,6 @@
     padding-top: calc(var(--spacing) * 5) !important;
   }
 
-  .\!pt-10 {
-    padding-top: calc(var(--spacing) * 10) !important;
-  }
-
-  .pt-0 {
-    padding-top: calc(var(--spacing) * 0);
-  }
-
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -1458,14 +1445,6 @@
   .text-xs {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
-  }
-
-  .text-\[2px\] {
-    font-size: 2px;
-  }
-
-  .text-\[2rem\] {
-    font-size: 2rem;
   }
 
   .text-\[16px\] {

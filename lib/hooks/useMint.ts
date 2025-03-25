@@ -2,7 +2,7 @@
 
 import { useAccount, useWalletClient, useWriteContract } from "wagmi";
 import { HYDROS_CONTRACT_ADDRESS } from "../config";
-import { PHASE_WHITELIST, PHASE_AUCTION } from "../abi/types";
+import { PHASE_WHITELIST } from "../abi/types";
 import { Abi, parseAbi } from "viem";
 import { useSaleInfoTestnet } from "./useSaleInfoTestnet";
 import { generateMerkleProof } from "./useUserInfos";
@@ -61,7 +61,7 @@ export function useMint() {
           chain: waleltClient.chain,
           account: waleltClient.account,
         });
-      } else if (saleInfo.currentPhase === PHASE_AUCTION) {
+      } else {
         tx = await writeContractAsync({
           address: HYDROS_CONTRACT_ADDRESS,
           abi: HydrosNFTSaleABI,
@@ -71,8 +71,6 @@ export function useMint() {
           chain: waleltClient.chain,
           account: waleltClient.account,
         });
-      } else {
-        throw new Error("Minting not available in current phase");
       }
 
       onSuccess?.();

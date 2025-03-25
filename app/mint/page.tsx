@@ -8,7 +8,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { PriceTable } from "@/components/PriceTable";
-import { PHASE_AUCTION, PHASE_WHITELIST } from "@/lib/abi/types";
+import {
+  PHASE_AUCTION,
+  PHASE_FINISHED,
+  PHASE_WHITELIST,
+} from "@/lib/abi/types";
 import {
   ExtendedSalesInfo,
   useSaleInfoTestnet,
@@ -107,7 +111,7 @@ export default function MintPage() {
       return Number(saleInfo.whitelistSaleConfig.maxPerWallet);
     }
     // For auction phase
-    else if (saleInfo.currentPhase === PHASE_AUCTION) {
+    else {
       // If maxPerWallet is 0, it means unlimited - limit to 10 per tx for gas
       if (saleInfo.auctionSaleConfig.maxPerWallet === BigInt(0)) {
         return 10; // Max 10 per transaction for gas efficiency
@@ -118,8 +122,6 @@ export default function MintPage() {
       );
       return Number(saleInfo.auctionSaleConfig.maxPerWallet);
     }
-
-    return 1; // Default to 1 for unknown phases
   };
 
   const getCurrentPrice = () => {
@@ -130,10 +132,8 @@ export default function MintPage() {
     // Get the current unit price based on the sale phase
     if (saleInfo.currentPhase === PHASE_WHITELIST) {
       unitPrice = saleInfo.whitelistSaleConfig.price;
-    } else if (saleInfo.currentPhase === PHASE_AUCTION) {
-      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     } else {
-      return "0";
+      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     }
 
     return parseFloat(formatUnits(unitPrice, 18)).toFixed(5);
@@ -147,10 +147,8 @@ export default function MintPage() {
     // Get the current unit price based on the sale phase
     if (saleInfo.currentPhase === PHASE_WHITELIST) {
       unitPrice = saleInfo.whitelistSaleConfig.price;
-    } else if (saleInfo.currentPhase === PHASE_AUCTION) {
-      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     } else {
-      return "0";
+      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     }
 
     const totalPrice = unitPrice * BigInt(mintAmount);
@@ -365,9 +363,18 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
     null
   );
   const isWhitelistPhase = saleInfo?.currentPhase === PHASE_WHITELIST;
+  const isAuctionPhase = saleInfo?.currentPhase === PHASE_AUCTION;
+  const isFinishedPhase = saleInfo?.currentPhase === PHASE_FINISHED;
+  const isInactivePhase =
+    !isWhitelistPhase && !isAuctionPhase && !isFinishedPhase;
 
   // Calculate the next price update timestamp based on contract logic
   useEffect(() => {
+    if (!isAuctionPhase && !isWhitelistPhase) {
+      setNextUpdateTimestamp(null);
+      return;
+    }
+
     if (
       !isWhitelistPhase &&
       saleInfo?.auctionSaleConfig.startTime &&
@@ -606,7 +613,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   {timeUntilPriceUpdate}s
                 </p>
               </>
-            ) : (
+            ) : isWhitelistPhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
                   PUBLIC SALE STARTS IN
@@ -615,7 +622,13 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   startTime={saleInfo?.auctionSaleConfig.startTime}
                 />
               </>
-            )}
+            ) : isFinishedPhase ? (
+              <>
+                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                  PUBLIC SALE STARTS IN
+                </h3>
+              </>
+            ) : undefined}
 
             <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
 

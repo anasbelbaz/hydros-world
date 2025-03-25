@@ -230,6 +230,10 @@ export default function MintPage() {
     }
   };
 
+  if (saleInfo?.currentPhase === PHASE_INACTIVE) {
+    return <AuctionNotStarted />;
+  }
+
   if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
     return <AuctionNotStarted />;
   }
@@ -644,7 +648,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
               </>
             ) : undefined}
 
-            {isFinishedPhase || isInactivePhase ? (
+            {isFinishedPhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
                   RESERVE PRICE REACHED

@@ -137,7 +137,7 @@ export default function MintPage() {
       unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     }
 
-    return parseFloat(formatUnits(unitPrice, 18)).toFixed(5);
+    return parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
   };
 
   const getTotalPrice = () => {
@@ -153,7 +153,7 @@ export default function MintPage() {
     }
 
     const totalPrice = unitPrice * BigInt(mintAmount);
-    return parseFloat(formatUnits(totalPrice, 18)).toFixed(5);
+    return parseFloat(formatUnits(totalPrice, 18)).toFixed(4);
   };
 
   const getPhaseTitle = () => {

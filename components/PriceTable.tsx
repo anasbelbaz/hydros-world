@@ -2,6 +2,7 @@ import { HypeLogo } from "@/lib/utils/utils";
 import { formatUnits } from "viem";
 import { motion } from "framer-motion";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
+import { EqualApproximately } from "lucide-react";
 
 export function PriceTable() {
   const {
@@ -165,7 +166,7 @@ export function PriceTable() {
               <>
                 <span>
                   {formatPrice(
-                    saleInfo?.auctionSaleConfig.price || BigInt(0) / BigInt(10)
+                    saleInfo?.auctionSaleConfig.floorPrice || BigInt(0)
                   )}
                 </span>
                 <HypeLogo className="ml-1 w-3 h-3" />
@@ -181,10 +182,11 @@ export function PriceTable() {
               <LoadingValue />
             ) : (
               <>
-                <span>
-                  {parseFloat(
+                <span className="flex items-center">
+                  <EqualApproximately className="w-3 h-3" />
+                  {`${parseFloat(
                     formatUnits(saleInfo?.priceStep || BigInt(0), 18)
-                  ).toFixed(9)}
+                  ).toFixed(4)}`}
                 </span>
                 <HypeLogo className="ml-1 w-3 h-3" />
               </>

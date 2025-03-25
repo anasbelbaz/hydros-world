@@ -2,7 +2,13 @@ import { HypeLogo } from "@/lib/utils/utils";
 import { formatUnits } from "viem";
 import { motion } from "framer-motion";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
-import { EqualApproximately } from "lucide-react";
+import { EqualApproximately, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function PriceTable() {
   const {
@@ -174,8 +180,20 @@ export function PriceTable() {
             )}
           </div>
 
-          <div className="text-primary/80 font-herculanum text-sm uppercase self-center">
+          <div className="text-primary/80 font-herculanum text-sm uppercase self-center flex items-center gap-2">
             PRICE STEP
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-3 h-3 text-primary/60 hover:text-primary cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-[#0A1E23] border-primary/20">
+                  <p className="font-herculanum text-sm text-white">
+                    {formatUnits(saleInfo?.priceStep || BigInt(0), 18)} HYDRO
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="text-right text-white font-herculanum flex items-center justify-end self-center">
             {isLoading ? (

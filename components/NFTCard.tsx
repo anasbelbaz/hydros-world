@@ -131,7 +131,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({
   return (
     <motion.div
       ref={cardRef}
-      className="relative w-full max-h-[320px] max-w-[212px] rounded-lg overflow-hidden backdrop-blur-2xl perspective-1000 group"
+      className="relative w-full max-h-[320px] max-w-[212px] rounded-lg overflow-hidden backdrop-blur-2xl perspective-1000 group cursor-pointer"
       style={{
         transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
         transition: isHovering
@@ -142,12 +142,14 @@ export const NFTCard: React.FC<NFTCardProps> = ({
           ? `0 10px 30px -10px rgba(0,0,0,0.5), 
            ${rotateY > 0 ? "-2px" : "2px"} ${
               rotateX > 0 ? "2px" : "-2px"
-            } 10px rgba(0,0,0,0.1)`
+            } 10px rgba(0,0,0,0.1), 0 0 15px rgba(152, 252, 228, 0.3)`
           : "0 5px 15px -5px rgba(0,0,0,0.35)",
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
     >
       {/* Lighting overlay effect */}
       <div
@@ -159,6 +161,27 @@ export const NFTCard: React.FC<NFTCardProps> = ({
           mixBlendMode: "lighten",
         }}
       />
+
+      {/* View icon overlay on hover */}
+      <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
+        <div className="bg-primary/20 backdrop-blur-sm p-2 rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-white"
+          >
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+      </div>
 
       {/* NFT Image */}
       <div className="relative w-full aspect-square bg-transparent">

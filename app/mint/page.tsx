@@ -670,8 +670,9 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                 ? "Loading..."
                 : `${
                     saleInfo?.currentPhase === PHASE_WHITELIST
-                      ? saleInfo?.maxSupply - saleInfo?.totalSupply
-                      : saleInfo.whitelistSaleConfig.maxSupply
+                      ? saleInfo.whitelistSaleConfig.maxSupply -
+                        saleInfo.totalSupply
+                      : saleInfo?.maxSupply - saleInfo?.totalSupply
                   }`}
             </p>
             {saleInfo?.currentPhase === PHASE_AUCTION ? (

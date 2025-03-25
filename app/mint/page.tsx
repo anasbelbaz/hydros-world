@@ -230,7 +230,10 @@ export default function MintPage() {
     }
   };
 
-  if (saleInfo?.currentPhase === PHASE_INACTIVE) {
+  if (
+    saleInfo?.currentPhase === PHASE_INACTIVE &&
+    saleInfo?.maxSupply - saleInfo?.totalSupply !== BigInt(0)
+  ) {
     return <AuctionNotStarted />;
   }
 

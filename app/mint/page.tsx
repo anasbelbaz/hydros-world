@@ -309,7 +309,12 @@ export default function MintPage() {
                     onClick={() => handleMint()}
                     variant="default"
                     className=" hover:translate-y-[-1px] hover:shadow-md p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
-                    disabled={mintProgress === "loading" || isRefetching}
+                    disabled={
+                      mintProgress === "loading" ||
+                      isRefetching ||
+                      userInfos?.whitelistMinted >=
+                        saleInfo?.whitelistSaleConfig.maxPerWallet
+                    }
                   >
                     {mintProgress === "loading"
                       ? "MINTING..."
@@ -354,33 +359,98 @@ type TimerProps = {
 };
 
 function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
-  const [timeUntilPriceUpdate, setTimeUntilPriceUpdate] = useState(
-    Number(saleInfo?.priceUpdateInterval)
-  );
+  const [timeUntilPriceUpdate, setTimeUntilPriceUpdate] = useState<number>(60);
+  const [whitelistTimePercentage, setWhitelistTimePercentage] =
+    useState<number>(100);
+  const isWhitelistPhase = saleInfo?.currentPhase === PHASE_WHITELIST;
+
+  // For auction phase, we show the price update interval countdown
+  useEffect(() => {
+    if (!isWhitelistPhase && saleInfo?.priceUpdateInterval) {
+      // Set the initial value
+      setTimeUntilPriceUpdate(Number(saleInfo.priceUpdateInterval));
+    }
+  }, [saleInfo?.priceUpdateInterval, isWhitelistPhase]);
+
+  // Calculate the percentage of time remaining for whitelist phase
+  useEffect(() => {
+    if (isWhitelistPhase && saleInfo?.auctionSaleConfig.startTime) {
+      const now = Math.floor(Date.now() / 1000);
+      const startTimeSeconds = Number(saleInfo.auctionSaleConfig.startTime);
+
+      // Get the original duration (from whitelist start to auction start)
+      const whitelistStartTime = Number(saleInfo.whitelistSaleConfig.startTime);
+      const totalDuration = startTimeSeconds - whitelistStartTime;
+
+      // Calculate remaining time
+      const remainingTime = Math.max(0, startTimeSeconds - now);
+
+      // Calculate percentage - make sure totalDuration is not 0 to avoid division by zero
+      if (totalDuration > 0) {
+        const percentage = (remainingTime / totalDuration) * 100;
+        setWhitelistTimePercentage(percentage);
+      } else {
+        setWhitelistTimePercentage(0);
+      }
+
+      // Update every second
+      const interval = setInterval(() => {
+        const now = Math.floor(Date.now() / 1000);
+        const remainingTime = Math.max(0, startTimeSeconds - now);
+
+        if (totalDuration > 0) {
+          const percentage = (remainingTime / totalDuration) * 100;
+          setWhitelistTimePercentage(percentage);
+        } else {
+          setWhitelistTimePercentage(0);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [
+    isWhitelistPhase,
+    saleInfo?.auctionSaleConfig.startTime,
+    saleInfo?.whitelistSaleConfig.startTime,
+  ]);
 
   // Calculate the percentage of time remaining for the timer
-  const timePercentage = (timeUntilPriceUpdate / 60) * 100;
+  const calculateTimePercentage = () => {
+    if (isWhitelistPhase) {
+      // For whitelist phase, return the calculated percentage based on time remaining
+      return whitelistTimePercentage;
+    } else {
+      // For auction phase, show percentage of time remaining until next price update
+      return (
+        (timeUntilPriceUpdate / Number(saleInfo?.priceUpdateInterval || 60)) *
+        100
+      );
+    }
+  };
 
+  // Only start the countdown timer if we're in the auction phase
   useEffect(() => {
+    if (isWhitelistPhase) return; // Don't run the timer during whitelist phase
+
     // Create an interval for the countdown
     const interval = setInterval(() => {
       setTimeUntilPriceUpdate((prev) => {
-        // When we reach 0, reset to 60 and fetch new price
+        // When we reach 0, reset to priceUpdateInterval and fetch new price
         if (prev <= 1) {
           console.log("Timer complete - refetching price data");
           // Trigger refetch to get updated price
           refetch();
-          // Reset to 60 seconds
-          return Number(saleInfo?.priceUpdateInterval);
+          // Reset to the price update interval
+          return Number(saleInfo?.priceUpdateInterval || 60);
         }
         // Otherwise just count down
         return prev - 1;
       });
     }, 1000);
 
-    // Clear interval on component unmount
+    // Clear interval on component unmount or phase change
     return () => clearInterval(interval);
-  }, [refetch, saleInfo?.priceUpdateInterval]); // Only depend on refetch, not timeUntilPriceUpdate
+  }, [refetch, saleInfo?.priceUpdateInterval, isWhitelistPhase]);
 
   return (
     <div className="text-center relative overflow-visible">
@@ -389,7 +459,6 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.8 }}
-        // sm:w-[450px] sm:h-[450px] md:w-[550px] md:h-[550px] lg:w-[648px] lg:h-[648px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply
         className="absolute w-[400px] h-[400px] md:w-[450px] md:h-[450px] lg:w-[648px] lg:h-[648px] left-1/2 top-[153px] lg:top-[253px] sm:-bottom-[350px] md:-bottom-[400px] lg:-bottom-[460px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply"
         style={{
           backgroundImage: "url('/images/pre-launch-circle.png')",
@@ -408,7 +477,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         <div className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10">
           {/* Outer Circle - Timer Progress */}
           <CircularProgress
-            value={timePercentage}
+            value={calculateTimePercentage()}
             size={290}
             thickness={2}
             color="rgba(152, 252, 228, 1)"
@@ -417,7 +486,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           />
 
           <CircularProgress
-            value={timePercentage}
+            value={calculateTimePercentage()}
             size={350}
             thickness={2.5}
             color="rgba(152, 252, 228, 1)"
@@ -426,7 +495,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           />
 
           <CircularProgress
-            value={timePercentage}
+            value={calculateTimePercentage()}
             size={400}
             thickness={3}
             color="rgba(152, 252, 228, 1)"
@@ -435,7 +504,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           />
 
           <CircularProgress
-            value={timePercentage}
+            value={calculateTimePercentage()}
             size={450}
             thickness={3}
             color="rgba(152, 252, 228, 1)"
@@ -479,7 +548,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
           {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-            {saleInfo?.currentPhase !== PHASE_WHITELIST && (
+            {!isWhitelistPhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
                   PRICE UPDATE
@@ -488,9 +557,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   {timeUntilPriceUpdate}s
                 </p>
               </>
-            )}
-
-            {saleInfo?.currentPhase === PHASE_WHITELIST && (
+            ) : (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
                   PUBLIC SALE STARTS IN

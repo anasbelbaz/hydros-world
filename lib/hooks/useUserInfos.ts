@@ -6,6 +6,9 @@ import { HYDROS_CONTRACT_ADDRESS } from "../config";
 import { getBalance, readContract } from "viem/actions";
 import { publicClient } from "../client";
 import { Abi, Client, parseAbi } from "viem";
+import { MerkleTree } from "merkletreejs";
+import { keccak256 } from "viem/utils";
+import { ENV } from "../env";
 
 // For testing purposes - a simple Merkle tree with a few addresses
 // In production, this would be generated server-side
@@ -87,6 +90,52 @@ export interface UserInfos {
   whitelistMinted: bigint;
   nativeBalance: bigint;
   isWhitelisted: boolean;
+  merkleProof: string[];
+}
+
+// Define the Merkle root
+const MERKLE_ROOT =
+  "0xaa9226baa04baf510a569ec297df3549d2db40213ed9ed473a0426d0079a751a";
+
+// Function to check if an address is in the whitelist
+function isAddressWhitelisted(
+  address: string,
+  whitelistedAddresses: string[]
+): boolean {
+  if (!address) return false;
+
+  // Create leaf nodes
+  const leaves = whitelistedAddresses.map((addr) =>
+    keccak256(addr.toLowerCase() as `0x${string}`)
+  );
+
+  // Create Merkle tree
+  const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+
+  // Get the root
+  // const rootHash = merkleTree.getHexRoot();
+
+  // Verify if address is in the tree
+  const leaf = keccak256(address.toLowerCase() as `0x${string}`);
+  const proof = merkleTree.getHexProof(leaf);
+
+  return merkleTree.verify(proof, leaf, MERKLE_ROOT);
+}
+
+// Get Merkle proof for an address
+export function getMerkleProofForAddress(
+  address: string,
+  whitelistedAddresses: string[]
+): string[] {
+  if (!address) return [];
+
+  const leaves = whitelistedAddresses.map((addr) =>
+    keccak256(addr.toLowerCase() as `0x${string}`)
+  );
+  const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+  const leaf = keccak256(address.toLowerCase() as `0x${string}`);
+
+  return merkleTree.getHexProof(leaf);
 }
 
 export function useUserInfos() {
@@ -101,6 +150,7 @@ export function useUserInfos() {
           whitelistMinted: BigInt(0),
           nativeBalance: BigInt(0),
           isWhitelisted: false,
+          merkleProof: [],
         };
       }
 
@@ -127,18 +177,19 @@ export function useUserInfos() {
         });
 
         // Get isWhitelisted status
-        const isWhitelisted = (await readContract(publicClient as Client, {
-          address: HYDROS_CONTRACT_ADDRESS,
-          abi: HydrosNFTSaleABI,
-          functionName: "isWhitelisted",
-          args: [address, generateMerkleProof(address)],
-        })) as boolean;
+        const isWhitelisted = isAddressWhitelisted(
+          address || "",
+          ENV.WHITELIST_ADDRESSES // Assuming this contains your whitelisted addresses
+        );
 
         return {
           nftBalance: nftBalance as bigint,
           whitelistMinted: whitelistMinted as bigint,
           nativeBalance: nativeBalance.valueOf(),
           isWhitelisted,
+          merkleProof: isWhitelisted
+            ? getMerkleProofForAddress(address || "", ENV.WHITELIST_ADDRESSES)
+            : [],
         };
       } catch (error) {
         console.error("Error fetching user balance:", error);
@@ -147,6 +198,7 @@ export function useUserInfos() {
           nftBalance: BigInt(0),
           whitelistMinted: BigInt(0),
           nativeBalance: BigInt(0),
+          merkleProof: [],
         };
       }
     },

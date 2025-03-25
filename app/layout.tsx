@@ -46,7 +46,7 @@ export default function RootLayout({
         <div
           className="absolute inset-0 z-[-1]"
           style={{
-            backgroundImage: "url('/images/background.png')",
+            backgroundImage: "url('/images/background-2.png')",
             backgroundSize: "cover",
             // backgroundPosition: "center",
             backgroundRepeat: "no-repeat",

@@ -11,6 +11,7 @@ import { PriceTable } from "@/components/PriceTable";
 import {
   PHASE_AUCTION,
   PHASE_FINISHED,
+  PHASE_INACTIVE,
   PHASE_WHITELIST,
 } from "@/lib/abi/types";
 import {
@@ -365,8 +366,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   const isWhitelistPhase = saleInfo?.currentPhase === PHASE_WHITELIST;
   const isAuctionPhase = saleInfo?.currentPhase === PHASE_AUCTION;
   const isFinishedPhase = saleInfo?.currentPhase === PHASE_FINISHED;
-  const isInactivePhase =
-    !isWhitelistPhase && !isAuctionPhase && !isFinishedPhase;
+  const isInactivePhase = saleInfo?.currentPhase === PHASE_INACTIVE;
 
   // Calculate the next price update timestamp based on contract logic
   useEffect(() => {
@@ -604,7 +604,15 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
           {/* Center Text */}
           <div className="absolute inset-0 pt-10 flex flex-col items-center justify-center text-center z-10">
-            {!isWhitelistPhase ? (
+            {isInactivePhase ? (
+              <>
+                <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
+                  INACTIVE
+                </h3>
+              </>
+            ) : undefined}
+
+            {isAuctionPhase ? (
               <>
                 <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
                   NEXT PRICE IN
@@ -613,7 +621,9 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   {timeUntilPriceUpdate}s
                 </p>
               </>
-            ) : isWhitelistPhase ? (
+            ) : undefined}
+
+            {isWhitelistPhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
                   PUBLIC SALE STARTS IN
@@ -622,10 +632,12 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   startTime={saleInfo?.auctionSaleConfig.startTime}
                 />
               </>
-            ) : isFinishedPhase ? (
+            ) : undefined}
+
+            {isFinishedPhase || isInactivePhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                  PUBLIC SALE STARTS IN
+                  PUBLIC SALE ENDED
                 </h3>
               </>
             ) : undefined}

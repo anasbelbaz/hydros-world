@@ -218,3 +218,13 @@
   margin-top: -0.5rem;
   letter-spacing: 0.05em;
 }
+
+@keyframes levitation {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(10px) rotate(-1deg); } /* Monte légèrement */
+  100% { transform: translateY(0); }
+}
+
+.levitating {
+  animation: levitation 5s ease-in-out infinite;
+}

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useWaitForTransactionReceipt } from "wagmi";
 import { toast } from "sonner";
 
+import Image from "next/image";
 import { Counter } from "@/components/Counter";
 import { Button } from "@/components/ui/button";
 import { useReveal } from "@/lib/hooks/useReveal";
@@ -334,32 +335,32 @@ export default function RevealPage() {
 
   return (
     <>
-      <div className="w-full mx-auto px-4 flex flex-col pt-30 relative">
-        <div className="flex flex-col w-full">
+      <div className="w-full flex-1 mx-auto px-4 flex flex-col relative">
+        <div className="flex flex-col w-full flex-1">
           {/* Main content grid - two columns on desktop, stacked on mobile */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 w-full items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 w-full items-start flex-1">
             {/* Left Column - Artifact Image - On mobile this goes second */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex justify-center relative order-2 lg:order-1 h-[794px]"
+              className="flex justify-center relative lg:h-full h-[50vh] mt-auto order-2 lg:order-1"
             >
-              <div className="relative w-full flex items-end justify-center">
+              <div className="relative w-full flex items-end justify-center levitating">
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full h-full">
-                  {/* <Image
+                  <Image
                     src="/images/artefact_hand.png"
                     alt="Hydros Artifact"
-                    width={1000}
-                    height={794}
+                    width={761}
+                    height={757}
                     priority
-                    className="object-contain absolute -inset-6 left-1/2 transform -translate-x-1/2 w-[120%] max-w-[1000px] h-auto scale-125 sm:scale-110 md:scale-125 lg:scale-150"
-                  /> */}
+                    className="object-contain mt-auto absolute inset-0 left-1/2 transform -translate-x-1/2 w-full max-w-[1000px] lg:max-h-[80vh] max-h-full h-auto"
+                  />
 
                   {/* Glowing orb overlay */}
-                  {/* <div className="absolute top-[33%] left-1/2 -translate-x-1/2 w-[200px] h-[200px] rounded-full bg-teal-400/20 blur-xl animate-pulse"></div>
-                  <div className="absolute top-[33%] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full bg-teal-300/30 blur-lg animate-pulse"></div>
-                  <div className="absolute top-[33%] left-1/2 -translate-x-1/2 w-[120px] h-[120px] rounded-full bg-teal-200/40 blur-md animate-pulse"></div> */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 scale-[0.6] w-full max-w-[1000px] max-h-full lg:max-h-[80vh] aspect-square rounded-full bg-teal-400/10 blur-2xl animate-pulse"></div>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 scale-[0.5] w-full max-w-[1000px] max-h-full lg:max-h-[80vh] aspect-square rounded-full bg-teal-300/10 blur-2xl animate-pulse"></div>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 scale-[0.4] w-full max-w-[1000px] max-h-full lg:max-h-[80vh] aspect-square rounded-full bg-teal-200/10 blur-2xl animate-pulse"></div>
                 </div>
               </div>
             </motion.div>
@@ -369,7 +370,7 @@ export default function RevealPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col items-center pt-8 lg:pt-24 order-1 lg:order-2"
+              className="flex flex-col items-center lg:pt-0 pt-8 h-full justify-center order-1 lg:order-2"
             >
               <div className="flex flex-col items-center justify-center gap-5">
                 <div className="flex flex-col items-center justify-center gap-2">
@@ -380,7 +381,7 @@ export default function RevealPage() {
                     USE THE POWER OF THE AQUALIUM TO REVEAL YOUR HYDROS
                   </p>
                 </div>
-                <div className="mb-4">
+                <div className="mt-4">
                   <Counter
                     amount={revealAmount}
                     handleIncrement={handleIncrement}

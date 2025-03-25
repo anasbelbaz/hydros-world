@@ -141,7 +141,7 @@ export default function Navbar() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Image
-                src="/images/hydros-logo.png"
+                src="/images/hydros-logo.svg"
                 alt="Hydros Logo"
                 width={isMobile ? 60 : 120}
                 height={isMobile ? 30 : 60}

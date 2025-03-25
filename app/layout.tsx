@@ -61,7 +61,7 @@ export default function RootLayout({
           }}
         />
         <Web3Providers>
-          <div className="flex flex-col min-h-screen relative">
+          <div className="flex flex-col min-h-screen relative overflow-hidden">
             <Navbar />
             <main className="flex-1 flex">{children}</main>
             {/* <Footer /> */}

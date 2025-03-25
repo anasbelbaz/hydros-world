@@ -18,7 +18,7 @@ export default function AuctionNotStarted() {
     : saleInfo?.auctionSaleConfig.startTime;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 flex flex-col pt-30 relative">
+    <div className="w-full max-w-7xl mx-auto px-4 pt-6 pb-12 flex flex-col justify-center relative">
       <FloatingParticles />
       {/* Tables and Countdown */}
       <div className="flex flex-col w-full">

@@ -141,7 +141,7 @@ export default function CollectionPage() {
           </div>
 
           {!isConnected ? (
-            <div className="price-table p-8 text-center w-max-w-[400px] mx-auto">
+            <div className="price-table px-4 py-2 text-center w-max-w-[400px] mx-auto">
               <p className="text-muted-foreground mb-8">
                 Please connect your wallet to view your collection.
               </p>
@@ -151,12 +151,12 @@ export default function CollectionPage() {
               <LoadingPlaceholders />
             </>
           ) : error ? (
-            <div className="price-table p-8 text-center">
+            <div className="price-table px-4 py-2 text-center">
               <p className="text-red-400 mb-8">{error}</p>
               <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
           ) : ownedTokens.length === 0 ? (
-            <div className="price-table p-8 text-center">
+            <div className="price-table px-4 py-2 text-center">
               <p className="text-muted-foreground mb-8">
                 You don&apos;t own any Hydros NFTs yet.
               </p>

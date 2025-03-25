@@ -42,7 +42,7 @@ export function PriceTable() {
     return (
       <div className="grid grid-cols-2 gap-4">
         <motion.div
-          className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg"
+          className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -52,7 +52,7 @@ export function PriceTable() {
           </div>
         </motion.div>
         <motion.div
-          className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg"
+          className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
@@ -69,7 +69,7 @@ export function PriceTable() {
     <div className="grid grid-cols-2 gap-4">
       {/* Whitelist Price Table */}
       <motion.div
-        className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg h-full"
+        className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg h-full"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -134,7 +134,7 @@ export function PriceTable() {
 
       {/* Auction Price Table */}
       <motion.div
-        className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg h-full"
+        className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 rounded-lg h-full"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}

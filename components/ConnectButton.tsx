@@ -47,7 +47,14 @@ export function ConnectButton() {
   if (!isMounted) {
     return (
       <div className="opacity-0">
-        <Button>{isMobile ? "Connect" : "CONNECT WALLET"}</Button>
+        <Button>
+          {isMobile ? "" : <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.3334 7.99984V5.33317H4.00008C3.64646 5.33317 3.30732 5.19269 3.05727 4.94265C2.80722 4.6926 2.66675 4.35346 2.66675 3.99984C2.66675 3.2665 3.26675 2.6665 4.00008 2.6665H12.0001V5.33317" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.66675 4V12C2.66675 12.7333 3.26675 13.3333 4.00008 13.3333H13.3334V10.6667" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.0001 8C11.6465 8 11.3073 8.14048 11.0573 8.39052C10.8072 8.64057 10.6667 8.97971 10.6667 9.33333C10.6667 10.0667 11.2667 10.6667 12.0001 10.6667H14.6667V8H12.0001Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>}
+          {isMobile ? "Connect" : "CONNECT WALLET"}
+          </Button>
       </div>
     );
   }
@@ -79,6 +86,11 @@ export function ConnectButton() {
               if (!account) {
                 return (
                   <Button onClick={openConnectModal} type="button">
+                     {isMobile ? "" : <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.3334 7.99984V5.33317H4.00008C3.64646 5.33317 3.30732 5.19269 3.05727 4.94265C2.80722 4.6926 2.66675 4.35346 2.66675 3.99984C2.66675 3.2665 3.26675 2.6665 4.00008 2.6665H12.0001V5.33317" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M2.66675 4V12C2.66675 12.7333 3.26675 13.3333 4.00008 13.3333H13.3334V10.6667" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M12.0001 8C11.6465 8 11.3073 8.14048 11.0573 8.39052C10.8072 8.64057 10.6667 8.97971 10.6667 9.33333C10.6667 10.0667 11.2667 10.6667 12.0001 10.6667H14.6667V8H12.0001Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>}
                     {isMobile ? "Connect" : "CONNECT WALLET"}
                   </Button>
                 );

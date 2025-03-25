@@ -139,8 +139,9 @@
   font-family: "Herculanum", "Rajdhani", sans-serif;
   letter-spacing: 0%;
   font-weight: 400;
-  color: rgba(152, 252, 228, 1);
-  text-shadow: 0 0 15px rgba(152, 252, 228, 0.5);
+  color: rgba(255, 255, 255, 1);
+  /*color: rgba(152, 252, 228, 1);
+  text-shadow: 0 0 15px rgba(152, 252, 228, 0.5);*/
   font-size: 40px;
   line-height: 42px;
 }
@@ -163,9 +164,9 @@
 
 .nav-link.active {
   color: white;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(4px);
   border-bottom: 2px solid rgba(152, 252, 228, 1);
-  box-shadow: 0 4px 15px rgba(152, 252, 228, 0.3);
+  background-color: rgba(152, 252, 228, 0.05);
 }
 
 .nav-link.active::after {
@@ -196,11 +197,9 @@
 }
 
 .price-table {
-  background: rgba(13, 43, 56, 0.3);
-  border: 1px solid rgba(152, 252, 228, 0.3);
+  background: rgba(255,255,255, 0.05);
   border-radius: 0.75rem;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
 }
 
 .countdown-digit {

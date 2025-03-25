@@ -21,6 +21,7 @@ import { Counter } from "@/components/Counter";
 import AuctionNotStarted from "@/components/AuctionNotStarted";
 import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import TimeRemaining from "@/components/TimeRemaining";
+import LiveView from "@/components/LiveView";
 
 export default function MintPage() {
   const queryClient = useQueryClient();
@@ -312,8 +313,9 @@ export default function MintPage() {
                     disabled={
                       mintProgress === "loading" ||
                       isRefetching ||
-                      userInfos?.whitelistMinted >=
-                        saleInfo?.whitelistSaleConfig.maxPerWallet
+                      (userInfos?.whitelistMinted >=
+                        saleInfo?.whitelistSaleConfig.maxPerWallet &&
+                        saleInfo?.currentPhase === PHASE_WHITELIST)
                     }
                   >
                     {mintProgress === "loading"
@@ -345,6 +347,9 @@ export default function MintPage() {
               getNftLeftPercentage={getNftLeftPercentage}
               saleInfo={saleInfo}
             />
+            <div className="pt-20">
+              <LiveView />
+            </div>
           </div>
         </div>
       </div>

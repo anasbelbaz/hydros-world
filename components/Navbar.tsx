@@ -83,13 +83,11 @@ export default function Navbar() {
               style={{ fontFamily: "'Herculanum', 'Rajdhani', sans-serif" }}
             >
               {link.label}{" "}
-              {link.href === "/reveal" &&
-                unrevealedTokens?.length &&
-                unrevealedTokens?.length > 0 && (
-                  <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-2 py-1 rounded-full">
-                    {unrevealedTokens?.length}
-                  </span>
-                )}
+              {link.href === "/reveal" && unrevealedTokens?.length > 0 && (
+                <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-2 py-1 rounded-full ">
+                  {unrevealedTokens?.length}
+                </span>
+              )}
             </Link>
           ))}
         </nav>

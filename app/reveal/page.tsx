@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useWaitForTransactionReceipt } from "wagmi";
+import { toast } from "sonner";
 
 import { Counter } from "@/components/Counter";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { useReveal } from "@/lib/hooks/useReveal";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 import { NFTMetadata } from "@/lib/types";
 import RevealDialog from "@/components/RevealDialog";
-import { toast } from "sonner";
+import { mockRevealedNFTs } from "./utils";
 
 export default function RevealPage() {
   const [revealAmount, setRevealAmount] = useState(1);
@@ -18,10 +19,23 @@ export default function RevealPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const [tokenIds, setTokenIds] = useState<number[]>([]);
-  const [revealedNFTs, setRevealedNFTs] = useState<NFTMetadata[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [revealedTokenIds, setRevealedTokenIds] = useState<number[]>([]);
-  const [currentNFT, setCurrentNFT] = useState<NFTMetadata | null>(null);
+
+  // TESTING ONLY
+
+  const [currentNFT, setCurrentNFT] = useState<NFTMetadata | null>(
+    mockRevealedNFTs[0]
+  );
+  const [revealedNFTs, setRevealedNFTs] =
+    useState<NFTMetadata[]>(mockRevealedNFTs);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setDialogOpen(true);
+    }, 2000);
+  }, []);
+
+  // END TESTING ONLY
 
   // Get the reveal hook
   const { executeReveal, isLoading, getTokenURI, isTokenRevealed } =

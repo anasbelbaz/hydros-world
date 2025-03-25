@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { HypeLogo } from "@/lib/utils/utils";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { Counter } from "@/components/Counter";
-import AuctionNotStarted from "@/components/AuctionNotStarted";
+// import AuctionNotStarted from "@/components/AuctionNotStarted";
 import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import TimeRemaining from "@/components/TimeRemaining";
 import LiveView from "@/components/LiveView";
@@ -230,13 +230,17 @@ export default function MintPage() {
     }
   };
 
-  if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
-    return <AuctionNotStarted />;
-  }
+  // TESTING ONLY
 
-  if (!userInfos?.isWhitelisted && saleInfo?.currentPhase !== PHASE_AUCTION) {
-    return <AuctionNotStarted />;
-  }
+  // if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
+  //   return <AuctionNotStarted />;
+  // }
+
+  // if (!userInfos?.isWhitelisted && saleInfo?.currentPhase !== PHASE_AUCTION) {
+  //   return <AuctionNotStarted />;
+  // }
+
+  // END TESTING ONLY
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 flex flex-col pt-20 relative pb-5">
@@ -409,6 +413,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
     saleInfo?.auctionSaleConfig.startTime,
     saleInfo?.priceUpdateInterval,
     isWhitelistPhase,
+    isAuctionPhase,
   ]);
 
   // Calculate the percentage of time remaining for whitelist phase

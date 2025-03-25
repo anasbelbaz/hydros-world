@@ -361,15 +361,48 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   const [timeUntilPriceUpdate, setTimeUntilPriceUpdate] = useState<number>(60);
   const [whitelistTimePercentage, setWhitelistTimePercentage] =
     useState<number>(100);
+  const [nextUpdateTimestamp, setNextUpdateTimestamp] = useState<number | null>(
+    null
+  );
   const isWhitelistPhase = saleInfo?.currentPhase === PHASE_WHITELIST;
 
-  // For auction phase, we show the price update interval countdown
+  // Calculate the next price update timestamp based on contract logic
   useEffect(() => {
-    if (!isWhitelistPhase && saleInfo?.priceUpdateInterval) {
-      // Set the initial value
-      setTimeUntilPriceUpdate(Number(saleInfo.priceUpdateInterval));
+    if (
+      !isWhitelistPhase &&
+      saleInfo?.auctionSaleConfig.startTime &&
+      saleInfo?.priceUpdateInterval
+    ) {
+      const now = Math.floor(Date.now() / 1000);
+      const auctionStartTime = Number(saleInfo.auctionSaleConfig.startTime);
+      const interval = Number(saleInfo.priceUpdateInterval);
+
+      // Calculate time since auction started
+      const timeSinceStart = now - auctionStartTime;
+
+      // Calculate how many full intervals have passed
+      const intervalsElapsed = Math.floor(timeSinceStart / interval);
+
+      // Calculate when the next interval will occur
+      const nextIntervalTime =
+        auctionStartTime + (intervalsElapsed + 1) * interval;
+
+      // Store this timestamp
+      setNextUpdateTimestamp(nextIntervalTime);
+
+      // Calculate how many seconds until the next update
+      const timeUntilNextUpdate = Math.max(0, nextIntervalTime - now);
+      setTimeUntilPriceUpdate(timeUntilNextUpdate);
+
+      console.log(
+        `Next price update in ${timeUntilNextUpdate} seconds at timestamp ${nextIntervalTime}`
+      );
     }
-  }, [saleInfo?.priceUpdateInterval, isWhitelistPhase]);
+  }, [
+    saleInfo?.auctionSaleConfig.startTime,
+    saleInfo?.priceUpdateInterval,
+    isWhitelistPhase,
+  ]);
 
   // Calculate the percentage of time remaining for whitelist phase
   useEffect(() => {
@@ -418,38 +451,55 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
     if (isWhitelistPhase) {
       // For whitelist phase, return the calculated percentage based on time remaining
       return whitelistTimePercentage;
+    } else if (nextUpdateTimestamp && saleInfo?.priceUpdateInterval) {
+      // For auction phase, calculate percentage based on time until next update
+      const now = Math.floor(Date.now() / 1000);
+      const totalInterval = Number(saleInfo.priceUpdateInterval);
+      const elapsed =
+        totalInterval - Math.min(totalInterval, nextUpdateTimestamp - now);
+      return Math.max(0, 100 - (elapsed / totalInterval) * 100);
     } else {
-      // For auction phase, show percentage of time remaining until next price update
-      return (
-        (timeUntilPriceUpdate / Number(saleInfo?.priceUpdateInterval || 60)) *
-        100
-      );
+      return 100; // Default if we don't have data yet
     }
   };
 
-  // Only start the countdown timer if we're in the auction phase
+  // Countdown timer for auction phase
   useEffect(() => {
-    if (isWhitelistPhase) return; // Don't run the timer during whitelist phase
+    if (isWhitelistPhase || !nextUpdateTimestamp) return;
 
-    // Create an interval for the countdown
+    // Create a timer that updates every second
     const interval = setInterval(() => {
-      setTimeUntilPriceUpdate((prev) => {
-        // When we reach 0, reset to priceUpdateInterval and fetch new price
-        if (prev <= 1) {
-          console.log("Timer complete - refetching price data");
-          // Trigger refetch to get updated price
+      const now = Math.floor(Date.now() / 1000);
+
+      // Calculate seconds until next price update
+      const remainingTime = Math.max(0, nextUpdateTimestamp - now);
+      setTimeUntilPriceUpdate(remainingTime);
+
+      // If it's time for an update, refetch the data
+      if (remainingTime <= 1) {
+        console.log("Time for price update - fetching new price data");
+
+        // Small delay to ensure the contract has updated
+        setTimeout(() => {
           refetch();
-          // Reset to the price update interval
-          return Number(saleInfo?.priceUpdateInterval || 60);
+        }, 2000);
+
+        // Calculate the next update timestamp
+        if (saleInfo?.priceUpdateInterval) {
+          const nextTimestamp =
+            nextUpdateTimestamp + Number(saleInfo.priceUpdateInterval);
+          setNextUpdateTimestamp(nextTimestamp);
         }
-        // Otherwise just count down
-        return prev - 1;
-      });
+      }
     }, 1000);
 
-    // Clear interval on component unmount or phase change
     return () => clearInterval(interval);
-  }, [refetch, saleInfo?.priceUpdateInterval, isWhitelistPhase]);
+  }, [
+    nextUpdateTimestamp,
+    isWhitelistPhase,
+    refetch,
+    saleInfo?.priceUpdateInterval,
+  ]);
 
   return (
     <div className="text-center relative overflow-visible">
@@ -546,12 +596,11 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           />
 
           {/* Center Text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+          <div className="absolute inset-0 pt-10 flex flex-col items-center justify-center text-center z-10">
             {!isWhitelistPhase ? (
               <>
-                <TimeRemaining startTime={saleInfo?.auctionEndTime} />
                 <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
-                  NEXT STEP IN
+                  NEXT PRICE IN
                 </h3>
                 <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
                   {timeUntilPriceUpdate}s
@@ -573,11 +622,20 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             <p className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
               SUPPLY
             </p>
+
             <p className="text-primary text-xl sm:text-2xl">
               {!saleInfo
                 ? "Loading..."
                 : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}
             </p>
+            {saleInfo?.currentPhase === PHASE_AUCTION ? (
+              <div className="flex flex-col items-center justify-center !pt-5">
+                <span className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
+                  ENDS IN
+                </span>
+                <TimeRemaining startTime={saleInfo?.auctionEndTime} small />
+              </div>
+            ) : undefined}
           </div>
         </div>
       </motion.div>

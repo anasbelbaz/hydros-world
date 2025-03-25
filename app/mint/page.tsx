@@ -284,7 +284,9 @@ export default function MintPage() {
                             ease: "easeInOut",
                           }}
                         >
-                          Fetching new price...
+                          {saleInfo?.currentPhase === PHASE_WHITELIST
+                            ? "Fetching price..."
+                            : "Fetching new price..."}
                         </motion.span>
                       ) : (
                         getTotalPrice()
@@ -659,7 +661,11 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             <p className="text-primary text-xl sm:text-2xl">
               {!saleInfo
                 ? "Loading..."
-                : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}
+                : `${
+                    saleInfo?.currentPhase === PHASE_WHITELIST
+                      ? saleInfo?.maxSupply - saleInfo?.totalSupply
+                      : saleInfo.whitelistSaleConfig.maxSupply
+                  }`}
             </p>
             {saleInfo?.currentPhase === PHASE_AUCTION ? (
               <div className="flex flex-col items-center justify-center !pt-5">

@@ -18,60 +18,24 @@ export const generateMerkleProof = (
   if (!address) return [];
 
   try {
-    // Try to load the Merkle proofs from localStorage
-    if (typeof window !== "undefined") {
-      // Check if we have any proofs stored in localStorage
-      const storedProofs = localStorage.getItem("merkleProofs");
-      if (storedProofs) {
-        try {
-          const proofs = JSON.parse(storedProofs);
+    // Create leaf nodes by hashing each address (matching backend's approach)
+    const whitelistedAddresses = ENV.WHITELIST_ADDRESSES;
+    const leaves = whitelistedAddresses.map((addr) =>
+      keccak256(addr.toLowerCase() as `0x${string}`)
+    );
 
-          // Normalize the input address to lowercase for case-insensitive comparison
-          const normalizedAddress = address.toLowerCase();
+    // Create Merkle tree
+    const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+    console.log("Merkle tree:", merkleTree.getRoot().toString("hex"));
 
-          // Check if the address has a proof in the loaded proofs
-          if (proofs[normalizedAddress]) {
-            console.log(
-              `Found stored merkle proof for address ${normalizedAddress}`
-            );
-            return proofs[normalizedAddress] as `0x${string}`[];
-          }
+    // Generate proof for the given address
+    const leaf = keccak256(address.toLowerCase() as `0x${string}`);
+    const proof = merkleTree.getHexProof(leaf);
 
-          console.log(`No stored proof found for address ${normalizedAddress}`);
-        } catch (e) {
-          console.error("Failed to parse stored merkle proofs:", e);
-        }
-      }
-    }
+    // For debugging
+    console.log("Generated merkle proof for", address, ":", proof);
 
-    // Fallback to the special case for testing addresses
-    // For demonstration purposes - in production these would be fetched from an API
-    // Using test data for the given Merkle root: 0xf8aebec120740b38b7a9c779fd1dbccad210f75ffa13542bb2fdd1899f621d6f
-    const testWhitelistedAddresses: Record<string, `0x${string}`[]> = {
-      // Example addresses with their proofs for the specified root
-      // Replace these with actual proofs for your Merkle tree
-      "0x4cf877aca8ed18372bb28791c0c69339c27f7d78": [
-        "0x523b14741c3b4fd4abbf54e1b0c9239c7d98888fbddd684f49ef7b47de710108",
-      ],
-      "0xD5de5a673C2FafeFbBE942B6A9Cbd30599D65Ec4": [
-        "0xe8593bda6b9a4a695ede09b2076df180522e3bac297a6f5b9e4dbc4b43630d3d",
-        "0x0c34dbce7f2c459885fa9652d1f4dd55a4c5775961e75463aa6bd6299ad31e26",
-      ],
-      "0xfC08eCB5a9467a37329D4f5B515BDd4752A331cB": [
-        "0xb24e732b8d3e7a79e5b3d45135057c1cc2814cd92b281de351568300549f0142",
-        "0x0c34dbce7f2c459885fa9652d1f4dd55a4c5775961e75463aa6bd6299ad31e26",
-      ],
-      // Add more whitelisted addresses and their proofs as needed
-    };
-
-    const normalizedAddress = address.toLowerCase();
-    if (testWhitelistedAddresses[normalizedAddress]) {
-      console.log(`Address ${normalizedAddress} is whitelisted with proof`);
-      return testWhitelistedAddresses[normalizedAddress];
-    }
-
-    console.log(`Address ${normalizedAddress} is not whitelisted`);
-    return [];
+    return proof as `0x${string}`[];
   } catch (error) {
     console.error("Error generating merkle proof:", error);
     return [];
@@ -90,52 +54,7 @@ export interface UserInfos {
   whitelistMinted: bigint;
   nativeBalance: bigint;
   isWhitelisted: boolean;
-  merkleProof: string[];
-}
-
-// Define the Merkle root
-const MERKLE_ROOT =
-  "0xaa9226baa04baf510a569ec297df3549d2db40213ed9ed473a0426d0079a751a";
-
-// Function to check if an address is in the whitelist
-function isAddressWhitelisted(
-  address: string,
-  whitelistedAddresses: string[]
-): boolean {
-  if (!address) return false;
-
-  // Create leaf nodes
-  const leaves = whitelistedAddresses.map((addr) =>
-    keccak256(addr.toLowerCase() as `0x${string}`)
-  );
-
-  // Create Merkle tree
-  const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-
-  // Get the root
-  // const rootHash = merkleTree.getHexRoot();
-
-  // Verify if address is in the tree
-  const leaf = keccak256(address.toLowerCase() as `0x${string}`);
-  const proof = merkleTree.getHexProof(leaf);
-
-  return merkleTree.verify(proof, leaf, MERKLE_ROOT);
-}
-
-// Get Merkle proof for an address
-export function getMerkleProofForAddress(
-  address: string,
-  whitelistedAddresses: string[]
-): string[] {
-  if (!address) return [];
-
-  const leaves = whitelistedAddresses.map((addr) =>
-    keccak256(addr.toLowerCase() as `0x${string}`)
-  );
-  const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-  const leaf = keccak256(address.toLowerCase() as `0x${string}`);
-
-  return merkleTree.getHexProof(leaf);
+  merkleProof: `0x${string}`[];
 }
 
 export function useUserInfos() {
@@ -155,8 +74,11 @@ export function useUserInfos() {
       }
 
       try {
-        // Get NFT balance and whitelist minted count
-        const [nftBalance, whitelistMinted] = await Promise.all([
+        // Generate Merkle proof for the address
+        const merkleProof = generateMerkleProof(address);
+
+        // Get NFT balance, whitelist minted count, and check if whitelisted
+        const [nftBalance, whitelistMinted, isWhitelisted] = await Promise.all([
           readContract(publicClient as Client, {
             address: HYDROS_CONTRACT_ADDRESS,
             abi: HydrosNFTSaleABI,
@@ -169,6 +91,12 @@ export function useUserInfos() {
             functionName: "whitelistMinted",
             args: [address],
           }),
+          readContract(publicClient as Client, {
+            address: HYDROS_CONTRACT_ADDRESS,
+            abi: HydrosNFTSaleABI,
+            functionName: "isWhitelisted",
+            args: [address, merkleProof],
+          }),
         ]);
 
         // Get native token balance
@@ -176,23 +104,15 @@ export function useUserInfos() {
           address,
         });
 
-        // Get isWhitelisted status
-        const isWhitelisted = isAddressWhitelisted(
-          address || "",
-          ENV.WHITELIST_ADDRESSES // Assuming this contains your whitelisted addresses
-        );
-
         return {
           nftBalance: nftBalance as bigint,
           whitelistMinted: whitelistMinted as bigint,
           nativeBalance: nativeBalance.valueOf(),
-          isWhitelisted,
-          merkleProof: isWhitelisted
-            ? getMerkleProofForAddress(address || "", ENV.WHITELIST_ADDRESSES)
-            : [],
+          isWhitelisted: isWhitelisted as boolean,
+          merkleProof,
         };
       } catch (error) {
-        console.error("Error fetching user balance:", error);
+        console.error("Error fetching user info:", error);
         return {
           isWhitelisted: false,
           nftBalance: BigInt(0),

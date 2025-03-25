@@ -220,7 +220,8 @@ const ENV = {
     // Access control
     WHITELIST_ADDRESSES: getEnvArray("NEXT_PUBLIC_WHITELIST_ADDRESSES", [
         "0x4cf877ACA8eD18372BB28791c0c69339c27F7d78",
-        "0x1234567890123456789012345678901234567890"
+        "0xfC08eCB5a9467a37329D4f5B515BDd4752A331cB",
+        "0xD5de5a673C2FafeFbBE942B6A9Cbd30599D65Ec4"
     ])
 };
 const CONTRACT_ADDRESS = ENV.HYDROS_NFT_ADDRESS; // Replace with actual contract address
@@ -316,8 +317,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$actions$2f$public$2f$readContract$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/viem/_esm/actions/public/readContract.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/client.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$abitype$2f$dist$2f$esm$2f$human$2d$readable$2f$parseAbi$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/abitype/dist/esm/human-readable/parseAbi.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$merkletreejs$2f$dist$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/merkletreejs/dist/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$utils$2f$hash$2f$keccak256$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/viem/_esm/utils/hash/keccak256.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$env$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/env.ts [app-client] (ecmascript)");
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
+;
+;
 ;
 ;
 ;
@@ -327,51 +334,20 @@ var _s = __turbopack_context__.k.signature();
 const generateMerkleProof = (address)=>{
     if (!address) return [];
     try {
-        // Try to load the Merkle proofs from localStorage
-        if ("TURBOPACK compile-time truthy", 1) {
-            // Check if we have any proofs stored in localStorage
-            const storedProofs = localStorage.getItem("merkleProofs");
-            if (storedProofs) {
-                try {
-                    const proofs = JSON.parse(storedProofs);
-                    // Normalize the input address to lowercase for case-insensitive comparison
-                    const normalizedAddress = address.toLowerCase();
-                    // Check if the address has a proof in the loaded proofs
-                    if (proofs[normalizedAddress]) {
-                        console.log(`Found stored merkle proof for address ${normalizedAddress}`);
-                        return proofs[normalizedAddress];
-                    }
-                    console.log(`No stored proof found for address ${normalizedAddress}`);
-                } catch (e) {
-                    console.error("Failed to parse stored merkle proofs:", e);
-                }
-            }
-        }
-        // Fallback to the special case for testing addresses
-        // For demonstration purposes - in production these would be fetched from an API
-        // Using test data for the given Merkle root: 0xf8aebec120740b38b7a9c779fd1dbccad210f75ffa13542bb2fdd1899f621d6f
-        const testWhitelistedAddresses = {
-            // Example addresses with their proofs for the specified root
-            // Replace these with actual proofs for your Merkle tree
-            "0x4cf877aca8ed18372bb28791c0c69339c27f7d78": [
-                "0x523b14741c3b4fd4abbf54e1b0c9239c7d98888fbddd684f49ef7b47de710108"
-            ],
-            "0xD5de5a673C2FafeFbBE942B6A9Cbd30599D65Ec4": [
-                "0xe8593bda6b9a4a695ede09b2076df180522e3bac297a6f5b9e4dbc4b43630d3d",
-                "0x0c34dbce7f2c459885fa9652d1f4dd55a4c5775961e75463aa6bd6299ad31e26"
-            ],
-            "0xfC08eCB5a9467a37329D4f5B515BDd4752A331cB": [
-                "0xb24e732b8d3e7a79e5b3d45135057c1cc2814cd92b281de351568300549f0142",
-                "0x0c34dbce7f2c459885fa9652d1f4dd55a4c5775961e75463aa6bd6299ad31e26"
-            ]
-        };
-        const normalizedAddress = address.toLowerCase();
-        if (testWhitelistedAddresses[normalizedAddress]) {
-            console.log(`Address ${normalizedAddress} is whitelisted with proof`);
-            return testWhitelistedAddresses[normalizedAddress];
-        }
-        console.log(`Address ${normalizedAddress} is not whitelisted`);
-        return [];
+        // Create leaf nodes by hashing each address (matching backend's approach)
+        const whitelistedAddresses = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$env$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ENV"].WHITELIST_ADDRESSES;
+        const leaves = whitelistedAddresses.map((addr)=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$utils$2f$hash$2f$keccak256$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["keccak256"])(addr.toLowerCase()));
+        // Create Merkle tree
+        const merkleTree = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$merkletreejs$2f$dist$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["MerkleTree"](leaves, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$utils$2f$hash$2f$keccak256$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["keccak256"], {
+            sortPairs: true
+        });
+        console.log("Merkle tree:", merkleTree.getRoot().toString("hex"));
+        // Generate proof for the given address
+        const leaf = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$utils$2f$hash$2f$keccak256$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["keccak256"])(address.toLowerCase());
+        const proof = merkleTree.getHexProof(leaf);
+        // For debugging
+        console.log("Generated merkle proof for", address, ":", proof);
+        return proof;
     } catch (error) {
         console.error("Error generating merkle proof:", error);
         return [];
@@ -399,12 +375,15 @@ function useUserInfos() {
                         nftBalance: BigInt(0),
                         whitelistMinted: BigInt(0),
                         nativeBalance: BigInt(0),
-                        isWhitelisted: false
+                        isWhitelisted: false,
+                        merkleProof: []
                     };
                 }
                 try {
-                    // Get NFT balance and whitelist minted count
-                    const [nftBalance, whitelistMinted] = await Promise.all([
+                    // Generate Merkle proof for the address
+                    const merkleProof = generateMerkleProof(address);
+                    // Get NFT balance, whitelist minted count, and check if whitelisted
+                    const [nftBalance, whitelistMinted, isWhitelisted] = await Promise.all([
                         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$actions$2f$public$2f$readContract$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["readContract"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["publicClient"], {
                             address: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HYDROS_CONTRACT_ADDRESS"],
                             abi: HydrosNFTSaleABI,
@@ -420,35 +399,36 @@ function useUserInfos() {
                             args: [
                                 address
                             ]
+                        }),
+                        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$actions$2f$public$2f$readContract$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["readContract"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["publicClient"], {
+                            address: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HYDROS_CONTRACT_ADDRESS"],
+                            abi: HydrosNFTSaleABI,
+                            functionName: "isWhitelisted",
+                            args: [
+                                address,
+                                merkleProof
+                            ]
                         })
                     ]);
                     // Get native token balance
                     const nativeBalance = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$actions$2f$public$2f$getBalance$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getBalance"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["publicClient"], {
                         address
                     });
-                    // Get isWhitelisted status
-                    const isWhitelisted = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$viem$2f$_esm$2f$actions$2f$public$2f$readContract$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["readContract"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["publicClient"], {
-                        address: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HYDROS_CONTRACT_ADDRESS"],
-                        abi: HydrosNFTSaleABI,
-                        functionName: "isWhitelisted",
-                        args: [
-                            address,
-                            generateMerkleProof(address)
-                        ]
-                    });
                     return {
                         nftBalance: nftBalance,
                         whitelistMinted: whitelistMinted,
                         nativeBalance: nativeBalance.valueOf(),
-                        isWhitelisted
+                        isWhitelisted: isWhitelisted,
+                        merkleProof
                     };
                 } catch (error) {
-                    console.error("Error fetching user balance:", error);
+                    console.error("Error fetching user info:", error);
                     return {
                         isWhitelisted: false,
                         nftBalance: BigInt(0),
                         whitelistMinted: BigInt(0),
-                        nativeBalance: BigInt(0)
+                        nativeBalance: BigInt(0),
+                        merkleProof: []
                     };
                 }
             }

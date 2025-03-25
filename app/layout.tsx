@@ -4,6 +4,7 @@ import { Rajdhani } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import { Web3Providers } from "../lib/providers";
+import { Toaster } from "@/components/ui/sonner";
 
 // import Footer from "@/components/Footer";
 
@@ -65,6 +66,12 @@ export default function RootLayout({
             <main className="flex-1 flex">{children}</main>
             {/* <Footer /> */}
           </div>
+          <Toaster
+            position="bottom-right"
+            richColors
+            closeButton
+            duration={5000}
+          />
         </Web3Providers>
       </body>
     </html>

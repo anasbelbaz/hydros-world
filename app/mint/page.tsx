@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { formatUnits } from "viem";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import { PriceTable } from "@/components/PriceTable";
 import { PHASE_AUCTION, PHASE_WHITELIST } from "@/lib/abi/types";
@@ -40,16 +41,36 @@ export default function MintPage() {
 
   // Effect to handle transaction confirmation
   useEffect(() => {
-    if (isConfirmed && txHash) {
+    if (isConfirmed) {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["saleInfoTestnet"] });
       setMintProgress("success");
+
+      // Show success toast
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <h3 className="font-herculanum">MINT SUCCESSFUL!</h3>
+          <p className="text-sm font-herculanum">
+            You minted {mintAmount} {mintAmount === 1 ? "HYDRO" : "HYDROS"}
+          </p>
+          <a
+            href={`https://testnet.purrsec.com/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs underline mt-1 text-primary hover:text-primary/80"
+          >
+            View transaction
+          </a>
+        </div>
+      );
     }
 
-    setTimeout(() => {
-      setMintProgress("idle");
-    }, 1000);
-  }, [isConfirmed, refetch, txHash, queryClient]);
+    if (mintProgress === "success") {
+      setTimeout(() => {
+        setMintProgress("idle");
+      }, 1000);
+    }
+  }, [isConfirmed]);
 
   // Calculate NFTs left percentage
   const getNftLeftPercentage = () => {
@@ -156,13 +177,35 @@ export default function MintPage() {
     try {
       setMintProgress("loading");
 
+      // Show loading toast
+      const loadingToast = toast.loading(
+        <div className="flex flex-col gap-1">
+          <h3 className="font-herculanum">MINTING IN PROGRESS</h3>
+          <p className="text-sm">
+            Minting {mintAmount} {mintAmount === 1 ? "HYDRO" : "HYDROS"}...
+          </p>
+        </div>
+      );
+
       // In a production app, you would use the useMint hook here
       const tx = await executeMint({
         quantity: mintAmount,
         onSuccess: () => {
           // Success handled by useEffect with transaction confirmation
         },
-        onError: () => {
+        onError: (error) => {
+          toast.dismiss(loadingToast);
+          toast.error(
+            <div className="flex flex-col gap-1">
+              <h3 className="font-herculanum">MINT FAILED</h3>
+              <p className="text-sm">
+                There was an error during the minting process.
+              </p>
+              <p className="text-xs text-red-300 mt-1">
+                {error?.message || "Unknown error"}
+              </p>
+            </div>
+          );
           setMintProgress("error");
         },
       });
@@ -170,10 +213,26 @@ export default function MintPage() {
       // Set the transaction hash after we have it
       setTxHash(tx);
 
+      // Dismiss loading toast once we have a transaction hash
+      toast.dismiss(loadingToast);
+
       // Don't call hooks here - the state and useEffect will handle it
     } catch (err) {
       console.error("Mint error:", err);
       setMintProgress("error");
+
+      // Show error toast
+      toast.error(
+        <div className="flex flex-col gap-1">
+          <h3 className="font-herculanum">MINT FAILED</h3>
+          <p className="text-sm">
+            There was an error during the minting process.
+          </p>
+          <p className="text-xs text-red-300 mt-1">
+            {err instanceof Error ? err.message : "Unknown error"}
+          </p>
+        </div>
+      );
     }
   };
 
@@ -262,19 +321,6 @@ export default function MintPage() {
                       : "CONNECT WALLET TO MINT"}
                   </span>
                 </div>
-
-                {/* {mintError && (
-                  <div className="mt-4 p-3 bg-red-900/30 border border-red-500/30 rounded text-red-200 text-sm">
-                    {mintError}
-                  </div>
-                )} */}
-
-                {mintProgress === "success" && (
-                  <div className="mt-4 p-3 bg-green-900/30 border border-green-500/30 rounded text-green-200 text-sm">
-                    Successfully minted {mintAmount} NFT
-                    {mintAmount !== 1 ? "s" : ""}!
-                  </div>
-                )}
               </motion.div>
             </div>
             <PriceTable />

@@ -549,8 +549,9 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
             {!isWhitelistPhase ? (
               <>
-                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                  PRICE UPDATE
+                <TimeRemaining startTime={saleInfo?.auctionEndTime} />
+                <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
+                  NEXT STEP IN
                 </h3>
                 <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
                   {timeUntilPriceUpdate}s
@@ -562,7 +563,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   PUBLIC SALE STARTS IN
                 </h3>
                 <TimeRemaining
-                  startTime={saleInfo.auctionSaleConfig.startTime}
+                  startTime={saleInfo?.auctionSaleConfig.startTime}
                 />
               </>
             )}

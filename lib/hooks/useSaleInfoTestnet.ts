@@ -27,6 +27,7 @@ export interface ExtendedSalesInfo extends SalesInfo {
   priceStep: bigint;
   currentPrice: bigint;
   priceUpdateInterval: bigint;
+  auctionEndTime: bigint;
   unrevealedTokens: bigint[]; // Array of unrevealed token IDs
 }
 
@@ -139,6 +140,8 @@ export function useSaleInfoTestnet() {
         const duration = auctionConfig[2];
         const priceUpdateInterval = priceUpdateIntervalResult as bigint;
 
+        const auctionEndTime = auctionConfig[2] + auctionConfig[3];
+
         // Calculate number of intervals in the auction duration
         const numIntervals = duration / priceUpdateInterval;
 
@@ -163,6 +166,7 @@ export function useSaleInfoTestnet() {
             duration: auctionConfig[3],
             maxPerWallet: auctionConfig[4],
           },
+          auctionEndTime: auctionEndTime,
           maxSupply: maxSupplyResult as bigint,
           totalSupply: totalSupplyResult as bigint,
           transfersEnabled: Boolean(transfersEnabledResult),

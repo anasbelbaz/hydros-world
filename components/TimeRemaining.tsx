@@ -31,7 +31,7 @@ export default function TimeRemaining({ startTime }: { startTime: bigint }) {
   }, [startTime]);
 
   return (
-    <div className="relative z-10 py-4">
+    <div className="relative z-10 ">
       <div className="flex items-end justify-center gap-4 sm:gap-8 mb-6 sm:mb-8">
         {timeRemaining.hours > 0 && (
           <div className="flex items-center">

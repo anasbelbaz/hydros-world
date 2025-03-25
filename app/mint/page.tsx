@@ -643,7 +643,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             </p>
             {saleInfo?.currentPhase === PHASE_AUCTION ? (
               <div className="flex flex-col items-center justify-center !pt-5">
-                <span className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
+                <span className="font-herculanum text-white mb-0.5 sm:mb-1">
                   ENDS IN
                 </span>
                 <TimeRemaining startTime={saleInfo?.auctionEndTime} small />

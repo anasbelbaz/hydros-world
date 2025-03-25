@@ -47,46 +47,30 @@ export default function TimeRemaining({
       >
         {timeRemaining.hours > 0 && (
           <div className="flex items-center">
-            <span
-              className={small ? "text-xl text-primary" : "countdown-digit"}
-            >
+            <span className={small ? "text-primary" : "countdown-digit"}>
               {timeRemaining.days}
             </span>
-            <span
-              className={small ? "text-xl text-white/70" : "countdown-label"}
-            >
+            <span className={small ? "text-white/70" : "countdown-label"}>
               D
             </span>
           </div>
         )}
         {timeRemaining.hours > 0 && (
           <div className="flex items-center">
-            <span
-              className={small ? "text-xl text-primary" : "countdown-digit"}
-            >
+            <span className={small ? "text-primary" : "countdown-digit"}>
               {timeRemaining.hours}
             </span>
-            <span
-              className={small ? "text-xl text-white/70" : "countdown-label"}
-            >
+            <span className={small ? " text-white/70" : "countdown-label"}>
               H
             </span>
           </div>
         )}
         {timeRemaining.minutes > 0 && (
           <div className="flex items-center">
-            <span
-              className={
-                small
-                  ? "text-xl text-primary countdown-digit"
-                  : "countdown-digit"
-              }
-            >
+            <span className={small ? "text-primary " : "countdown-digit"}>
               {timeRemaining.minutes}
             </span>
-            <span
-              className={small ? "text-xl text-white/70" : "countdown-label"}
-            >
+            <span className={small ? "text-white/70" : "countdown-label"}>
               M
             </span>
           </div>
@@ -96,13 +80,7 @@ export default function TimeRemaining({
             <span className={small ? "text-primary" : "countdown-digit"}>
               {timeRemaining.seconds}
             </span>
-            <span
-              className={
-                small
-                  ? "text-sm text-white/70 countdown-label"
-                  : "countdown-label"
-              }
-            >
+            <span className={small ? "text-white/70 " : "countdown-label"}>
               S
             </span>
           </div>

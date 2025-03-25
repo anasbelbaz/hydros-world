@@ -26,14 +26,10 @@ export const generateMerkleProof = (
 
     // Create Merkle tree
     const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-    console.log("Merkle tree:", merkleTree.getRoot().toString("hex"));
 
     // Generate proof for the given address
     const leaf = keccak256(address.toLowerCase() as `0x${string}`);
     const proof = merkleTree.getHexProof(leaf);
-
-    // For debugging
-    console.log("Generated merkle proof for", address, ":", proof);
 
     return proof as `0x${string}`[];
   } catch (error) {

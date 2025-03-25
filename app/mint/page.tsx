@@ -472,7 +472,13 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
   // Countdown timer for auction phase
   useEffect(() => {
-    if (isWhitelistPhase || !nextUpdateTimestamp) return;
+    if (
+      isWhitelistPhase ||
+      isFinishedPhase ||
+      isInactivePhase ||
+      !nextUpdateTimestamp
+    )
+      return;
 
     // Create a timer that updates every second
     const interval = setInterval(() => {
@@ -506,6 +512,8 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
     isWhitelistPhase,
     refetch,
     saleInfo?.priceUpdateInterval,
+    isFinishedPhase,
+    isInactivePhase,
   ]);
 
   return (
@@ -637,7 +645,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             {isFinishedPhase || isInactivePhase ? (
               <>
                 <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                  PUBLIC SALE ENDED
+                  RESERVE PRICE REACHED
                 </h3>
               </>
             ) : undefined}

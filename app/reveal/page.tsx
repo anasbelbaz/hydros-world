@@ -405,7 +405,7 @@ export default function RevealPage() {
                       isLoading ||
                       getMaxRevealAmount() === 0
                     }
-                    className=" hover:translate-y-[-1px] hover:shadow-md p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
+                    className="p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
                   >
                     {!isRevealEnabled
                       ? "Reveal not enabled"

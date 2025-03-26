@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { formatUnits } from "viem";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
@@ -243,7 +243,7 @@ export default function MintPage() {
   // END TESTING ONLY
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 flex flex-col pt-20 relative pb-5">
+    <div className="w-full max-w-7xl mx-auto px-4 pt-6 pb-12 flex flex-col justify-center relative">
       {/* Tables and Countdown */}
 
       <div className="flex flex-col w-full">
@@ -276,7 +276,7 @@ export default function MintPage() {
                 />
 
                 <div className="flex flex-col items-center gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 -mb-4">
                     <span className="text-teal-50 font-herculanum text-[33px]">
                       {isRefetching ? (
                         <motion.span
@@ -302,23 +302,33 @@ export default function MintPage() {
                     <span>/ HYDRO</span>
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-2">
-                  <Button
-                    onClick={() => handleMint()}
-                    variant="default"
-                    className=" hover:translate-y-[-1px] hover:shadow-md p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
-                    disabled={
-                      mintProgress === "loading" ||
-                      isRefetching ||
-                      (userInfos?.whitelistMinted >=
-                        saleInfo?.whitelistSaleConfig.maxPerWallet &&
-                        saleInfo?.currentPhase === PHASE_WHITELIST)
-                    }
+                <div className="flex flex-col items-center gap-2 mt-4">
+                  <motion.div
+                    whileHover={{ scale: 0.95 }}
+                    whileTap={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                    className="w-full"
                   >
-                    {mintProgress === "loading"
-                      ? "MINTING..."
-                      : `MINT ${mintAmount} HYDROS`}
-                  </Button>
+                    <Button
+                      onClick={() => handleMint()}
+                      variant="default"
+                      className="relative overflow-hidden group p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
+                      disabled={
+                        mintProgress === "loading" ||
+                        isRefetching ||
+                        (userInfos?.whitelistMinted >=
+                          saleInfo?.whitelistSaleConfig.maxPerWallet &&
+                          saleInfo?.currentPhase === PHASE_WHITELIST)
+                      }
+                    >
+                      <span className="z-10 flex items-center gap-2">
+                        {mintProgress === "loading"
+                        ? "MINTING..."
+                        : `MINT ${mintAmount} HYDROS`}
+                      </span>
+                        <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                    </Button>
+                  </motion.div>
                   <span className="text-sm text-teal-50 font-herculanum">
                     {isConnected
                       ? `MAX ${getMaxMintAmount()} PER WALLET`
@@ -521,6 +531,38 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
     isInactivePhase,
   ]);
 
+  const perspectiveEl = useRef(null);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = perspectiveEl.current.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20; // Ajuste l'intensité
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+      setMouseX(x);
+      setMouseY(y);
+    };
+
+    const handleMouseLeave = () => {
+      setMouseX(0);
+      setMouseY(0);
+    };
+
+    const element = perspectiveEl.current;
+    if (element) {
+      element.addEventListener("mousemove", handleMouseMove);
+      element.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      if (element) {
+        element.removeEventListener("mousemove", handleMouseMove);
+        element.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, []);
+
   return (
     <div className="text-center relative overflow-visible">
       {/* Pre-launch circle as absolutely positioned element with background image */}
@@ -542,8 +584,24 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex flex-col items-center justify-start"
+        ref={perspectiveEl}
+        style={{ perspective: "500px" }}
       >
-        <div className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10">
+
+        <motion.div
+          className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{
+            rotateX: mouseY,
+            rotateY: -mouseX,
+          }}
+          whileHover={{
+            scale: 1.04, // Échelle sur hover
+          }}
+          transition={{ type: "tween", duration: 0.4, ease: "easeOut" }}
+        >
+        
+    
           {/* Outer Circle - Timer Progress */}
           <CircularProgress
             value={calculateTimePercentage()}
@@ -675,7 +733,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
               </div>
             ) : undefined}
           </div>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );

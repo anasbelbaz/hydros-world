@@ -198,7 +198,7 @@
 
 .price-table {
   background: rgba(255,255,255, 0.05);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   backdrop-filter: blur(8px);
 }
 
@@ -228,3 +228,25 @@
 .levitating {
   animation: levitation 5s ease-in-out infinite;
 }
+
+/* 
+@keyframes background-frame {
+  0% {
+    -webkit-background-position: 100% 0;
+    background-position: 100% 0;
+}
+100% {
+    -webkit-background-position: 0% 0;
+    background-position: 0% 0;
+}
+}
+
+.animate-bg:hover {
+  -webkit-background: url("/images/animate-bg.jpg");
+  background: url("/images/animate-bg.jpg");
+  -webkit-background-size: 5000% auto;
+  background-size: 5000% auto;
+  -webkit-background-position: 100% 0;
+  background-position: 100% 0;
+  animation: background-frame 1.2s steps(49, end) infinite both;
+} */

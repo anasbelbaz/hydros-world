@@ -538,7 +538,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const rect = perspectiveEl.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20; // Ajuste l'intensité
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
       const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
       setMouseX(x);
       setMouseY(y);
@@ -570,7 +570,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.8 }}
-        className="absolute w-[400px] h-[400px] md:w-[450px] md:h-[450px] lg:w-[648px] lg:h-[648px] left-1/2 top-[153px] lg:top-[253px] sm:-bottom-[350px] md:-bottom-[400px] lg:-bottom-[460px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply"
+        className="absolute animate-rotate w-[400px] h-[400px] md:w-[450px] md:h-[450px] lg:w-[648px] lg:h-[648px] scale-[0.8] left-1/2 top-[153px] lg:top-[253px] sm:-bottom-[350px] md:-bottom-[400px] lg:-bottom-[460px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply"
         style={{
           backgroundImage: "url('/images/pre-launch-circle.png')",
           backgroundSize: "contain",
@@ -585,21 +585,21 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex flex-col items-center justify-start"
         ref={perspectiveEl}
-        style={{ perspective: "500px" }}
+        style={{ perspective: "500px", transformStyle: "preserve-3d"  }}
       >
 
         <motion.div
-          className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10"
-          style={{ transformStyle: "preserve-3d" }}
+          className="group relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10"
           animate={{
             rotateX: mouseY,
             rotateY: -mouseX,
           }}
           whileHover={{
-            scale: 1.04, // Échelle sur hover
+            scale: 1.04,
           }}
           transition={{ type: "tween", duration: 0.4, ease: "easeOut" }}
         >
+          <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute inset-0 w-full h-full rounded-full"></div>
         
     
           {/* Outer Circle - Timer Progress */}
@@ -609,7 +609,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={2}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 sm:hidden"
+            className="absolute -inset-6 -translate-z-8 sm:hidden"
           />
 
           <CircularProgress
@@ -618,7 +618,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={2.5}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 hidden sm:block md:hidden"
+            className="absolute -inset-6 -translate-z-8 hidden sm:block md:hidden"
           />
 
           <CircularProgress
@@ -627,7 +627,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={3}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 hidden md:block lg:hidden"
+            className="absolute -inset-6 -translate-z-8 hidden md:block lg:hidden"
           />
 
           <CircularProgress
@@ -636,7 +636,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={3}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 hidden lg:block"
+            className="absolute -inset-6 -translate-z-8 hidden lg:block"
           />
 
           {/* Inner Circle - Supply Progress */}
@@ -646,7 +646,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={4}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:hidden"
+            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 sm:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -654,7 +654,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={5}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden sm:block md:hidden"
+            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden sm:block md:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -662,7 +662,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={5}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block lg:hidden"
+            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden md:block lg:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -670,7 +670,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={6}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
+            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
           />
 
           {/* Center Text */}

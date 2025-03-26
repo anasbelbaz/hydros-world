@@ -229,7 +229,7 @@
   animation: levitation 5s ease-in-out infinite;
 }
 
-/* 
+ 
 @keyframes background-frame {
   0% {
     -webkit-background-position: 100% 0;
@@ -241,12 +241,23 @@
 }
 }
 
-.animate-bg:hover {
-  -webkit-background: url("/images/animate-bg.jpg");
-  background: url("/images/animate-bg.jpg");
-  -webkit-background-size: 5000% auto;
+.animate-bg {
+  background-color: #ffffff01;
+  background-image: url("/images/bg-animate.png");
   background-size: 5000% auto;
-  -webkit-background-position: 100% 0;
   background-position: 100% 0;
-  animation: background-frame 1.2s steps(49, end) infinite both;
-} */
+  animation: background-frame 1.6s steps(49, end) infinite both;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+}
+100% {
+    transform: rotate(-360deg);
+}
+}
+
+.animate-rotate {
+  animation: rotate 400s linear infinite;
+}

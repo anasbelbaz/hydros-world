@@ -261,3 +261,73 @@
 .animate-rotate {
   animation: rotate 400s linear infinite;
 }
+
+@keyframes mask-frame {
+  0% {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    opacity: 0;
+    transform: scale(0.99);
+}
+100% {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+    opacity: 100;
+}
+}
+
+.slider-fade-in .image-slider {
+  mask-image: url("/images/mask.png");
+  mask-size: 3000% auto;
+  mask-position: 100% 0;
+  animation: mask-frame 0.7s steps(29, end) 1 both;
+}
+
+.image-slider {
+  mask: none;
+}
+
+@keyframes slider-out-image {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: scale(1.01);
+    opacity: 0;
+}
+}
+
+.slider-fade-out .image-slider  {
+  animation: slider-out-image 0.6s ease-out 1;
+}
+
+
+@keyframes slider-in-content {
+  0% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+}
+}
+
+@keyframes slider-out-content {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+}
+}
+
+.slider-fade-in .content-slider {
+  animation: slider-in-content 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+.slider-fade-out .content-slider {
+  animation: slider-out-content 0.8s cubic-bezier(0.25, 1, 0.5, 1) 1;
+}

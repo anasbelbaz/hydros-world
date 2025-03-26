@@ -243,7 +243,7 @@ export default function MintPage() {
   // END TESTING ONLY
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 pt-6 pb-12 flex flex-col justify-center relative">
+    <div className="w-full max-w-7xl mx-auto px-4 pb-6 flex flex-col justify-center relative">
       {/* Tables and Countdown */}
 
       <div className="flex flex-col w-full">
@@ -253,34 +253,38 @@ export default function MintPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="order-2 lg:order-1" // Second on mobile, first on desktop
+            className="order-2 lg:order-1 flex flex-col justify-center gap-[4vh]" // Second on mobile, first on desktop
           >
-            <div className="flex flex-col items-center justify-center sm:pt-4 ">
-              <span className="text-teal-50 font-herculanum text-sm sm:text-base uppercase tracking-widest mb-2">
-                {getPhaseTitle()}
-              </span>
-              <h1 className="hydros-title !text-3xl mb-8 text-center">
-                CITIZEN OF HYDROPOLIS
-              </h1>
+            <div className="flex flex-col items-center justify-center gap-[4vh]">
+              <div className="flex flex-col items-center">
+                <span className="text-teal-50 font-herculanum text-sm sm:text-base uppercase tracking-widest mb-1">
+                  {getPhaseTitle()}
+                </span>
+                <h1 className="hydros-title !text-3xl text-center">
+                  CITIZEN OF HYDROPOLIS
+                </h1>
+              </div>
               <motion.div
-                className="flex flex-col items-center mb-8 gap-4"
+                className="flex flex-col items-center gap-[4vh]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
               >
+                <div className="-mb-4">
                 <Counter
                   amount={mintAmount}
                   handleIncrement={handleIncrement}
                   handleDecrement={handleDecrement}
                   getMaxAmount={getMaxMintAmount}
                 />
+                </div>
 
                 <div className="flex flex-col items-center gap-2">
                   <div className="flex items-center gap-2 -mb-4">
                     <span className="text-teal-50 font-herculanum text-[33px]">
                       {isRefetching ? (
                         <motion.span
-                          className="text-teal-50 font-herculanum text-[33px]"
+                          className="text-teal-50 font-herculanum text-[24px]"
                           animate={{ opacity: [0.5, 1, 0.5] }}
                           transition={{
                             repeat: Infinity,
@@ -302,7 +306,7 @@ export default function MintPage() {
                     <span>/ HYDRO</span>
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-2 mt-4">
+                <div className="flex flex-col items-center gap-2">
                   <motion.div
                     whileHover={{ scale: 0.95 }}
                     whileTap={{ scale: 1.05 }}
@@ -341,7 +345,7 @@ export default function MintPage() {
           </motion.div>
 
           {/* Right Column - Circle Timer */}
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 flex flex-col justify-center h-full">
             {" "}
             {/* First on mobile, second on desktop */}
             <Timer
@@ -354,7 +358,7 @@ export default function MintPage() {
               getNftLeftPercentage={getNftLeftPercentage}
               saleInfo={saleInfo}
             />
-            <div className="pt-20">
+            <div className="pt-[3vh]">
               <LiveView />
             </div>
           </div>
@@ -564,13 +568,13 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   }, []);
 
   return (
-    <div className="text-center relative overflow-visible">
+    <div className="text-center relative overflow-visible w-full max-w-[550px] mx-auto">
       {/* Pre-launch circle as absolutely positioned element with background image */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.8 }}
-        className="absolute animate-rotate w-[400px] h-[400px] md:w-[450px] md:h-[450px] lg:w-[648px] lg:h-[648px] scale-[0.8] left-1/2 top-[153px] lg:top-[253px] sm:-bottom-[350px] md:-bottom-[400px] lg:-bottom-[460px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply"
+        className="absolute animate-rotate w-full top-[-10%] aspect-square pointer-events-none mix-blend-multiply"
         style={{
           backgroundImage: "url('/images/pre-launch-circle.png')",
           backgroundSize: "contain",
@@ -589,7 +593,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
       >
 
         <motion.div
-          className="group relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] mt-6 md:mt-10"
+          className="group relative w-[80%] aspect-square flex justify-center items-center"
           animate={{
             rotateX: mouseY,
             rotateY: -mouseX,
@@ -599,7 +603,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
           }}
           transition={{ type: "tween", duration: 0.4, ease: "easeOut" }}
         >
-          <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute inset-0 w-full h-full rounded-full"></div>
+          <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute w-[86%] h-[86%] rounded-full"></div>
         
     
           {/* Outer Circle - Timer Progress */}
@@ -609,7 +613,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={2}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 -translate-z-8 sm:hidden"
+            className="absolute w-full sm:hidden"
           />
 
           <CircularProgress
@@ -618,7 +622,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={2.5}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 -translate-z-8 hidden sm:block md:hidden"
+            className="absolute w-full hidden sm:block md:hidden"
           />
 
           <CircularProgress
@@ -627,7 +631,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={3}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 -translate-z-8 hidden md:block lg:hidden"
+            className="absolute w-full hidden md:block lg:hidden"
           />
 
           <CircularProgress
@@ -636,7 +640,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={3}
             color="rgba(152, 252, 228, 1)"
             trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute -inset-6 -translate-z-8 hidden lg:block"
+            className="absolute w-full hidden lg:block"
           />
 
           {/* Inner Circle - Supply Progress */}
@@ -646,7 +650,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={4}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 sm:hidden"
+            className="absolute w-[90%] sm:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -654,7 +658,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={5}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden sm:block md:hidden"
+            className="absolute w-[90%] hidden sm:block md:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -662,7 +666,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={5}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden md:block lg:hidden"
+            className="absolute w-[90%] hidden md:block lg:hidden"
           />
           <CircularProgress
             value={getNftLeftPercentage()}
@@ -670,7 +674,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             thickness={6}
             color="rgba(240, 253, 250, 1)"
             trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute top-1/2 left-1/2 translate-z-8 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block"
+            className="absolute w-[90%] hidden lg:block"
           />
 
           {/* Center Text */}

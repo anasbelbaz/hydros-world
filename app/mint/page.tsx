@@ -539,31 +539,48 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
 
+  const targetX = useRef(0);
+  const targetY = useRef(0);
+  const animatedX = useRef(0);
+  const animatedY = useRef(0);
+  const rafId = useRef(0);
+
+  const lerp = (start: number, end: number, factor: number) => {
+    return start + (end - start) * factor;
+  };
+
   useEffect(() => {
+    if (!perspectiveEl.current) return;
+  
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = perspectiveEl.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
-      setMouseX(x);
-      setMouseY(y);
+      const rect = perspectiveEl.current!.getBoundingClientRect();
+      targetX.current = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+      targetY.current = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
     };
-
+  
     const handleMouseLeave = () => {
-      setMouseX(0);
-      setMouseY(0);
+      targetX.current = 0;
+      targetY.current = 0;
     };
-
+  
     const element = perspectiveEl.current;
-    if (element) {
-      element.addEventListener("mousemove", handleMouseMove);
-      element.addEventListener("mouseleave", handleMouseLeave);
-    }
-
+    element.addEventListener("mousemove", handleMouseMove);
+    element.addEventListener("mouseleave", handleMouseLeave);
+  
+    const animate = () => {
+      animatedX.current = lerp(animatedX.current, targetX.current, 0.2);
+      animatedY.current = lerp(animatedY.current, targetY.current, 0.2);
+      setMouseX(animatedX.current);
+      setMouseY(animatedY.current);
+      rafId.current = requestAnimationFrame(animate);
+    };
+  
+    rafId.current = requestAnimationFrame(animate);
+  
     return () => {
-      if (element) {
-        element.removeEventListener("mousemove", handleMouseMove);
-        element.removeEventListener("mouseleave", handleMouseLeave);
-      }
+      element.removeEventListener("mousemove", handleMouseMove);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+      cancelAnimationFrame(rafId.current);
     };
   }, []);
 
@@ -589,154 +606,157 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex flex-col items-center justify-start"
         ref={perspectiveEl}
-        style={{ perspective: "500px", transformStyle: "preserve-3d"  }}
-      >
-
-        <motion.div
-          className="group relative w-[80%] aspect-square flex justify-center items-center"
-          animate={{
-            rotateX: mouseY,
-            rotateY: -mouseX,
-          }}
-          whileHover={{
-            scale: 1.04,
-          }}
-          transition={{ type: "tween", duration: 0.4, ease: "easeOut" }}
-        >
-          <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute w-[86%] h-[86%] rounded-full"></div>
         
-    
-          {/* Outer Circle - Timer Progress */}
-          <CircularProgress
-            value={calculateTimePercentage()}
-            size={290}
-            thickness={2}
-            color="rgba(152, 252, 228, 1)"
-            trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute w-full sm:hidden"
-          />
+      >
+        <motion.div
+        whileHover={{scale: 1.04}}
+        transition={{ type: "spring", stiffness: 350, damping: 15 }}
+        className="w-full h-full flex flex-col items-center justify-start"
+        style={{ perspective: "500px", transformStyle: "preserve-3d"  }}
+        >
+          <motion.div
+            className="group relative w-[80%] aspect-square flex justify-center items-center"
+            animate={{
+              rotateX: mouseY,
+              rotateY: -mouseX,
+            }}
+            transition={{ type: "tween", duration: 0, ease: "easeOut" }}
+          >
+            <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute w-[86%] h-[86%] rounded-full"></div>
+          
+      
+            {/* Outer Circle - Timer Progress */}
+            <CircularProgress
+              value={calculateTimePercentage()}
+              size={290}
+              thickness={2}
+              color="rgba(152, 252, 228, 1)"
+              trackColor="rgba(152, 252, 228, 0.1)"
+              className="absolute w-full sm:hidden"
+            />
 
-          <CircularProgress
-            value={calculateTimePercentage()}
-            size={350}
-            thickness={2.5}
-            color="rgba(152, 252, 228, 1)"
-            trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute w-full hidden sm:block md:hidden"
-          />
+            <CircularProgress
+              value={calculateTimePercentage()}
+              size={350}
+              thickness={2.5}
+              color="rgba(152, 252, 228, 1)"
+              trackColor="rgba(152, 252, 228, 0.1)"
+              className="absolute w-full hidden sm:block md:hidden"
+            />
 
-          <CircularProgress
-            value={calculateTimePercentage()}
-            size={400}
-            thickness={3}
-            color="rgba(152, 252, 228, 1)"
-            trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute w-full hidden md:block lg:hidden"
-          />
+            <CircularProgress
+              value={calculateTimePercentage()}
+              size={400}
+              thickness={3}
+              color="rgba(152, 252, 228, 1)"
+              trackColor="rgba(152, 252, 228, 0.1)"
+              className="absolute w-full hidden md:block lg:hidden"
+            />
 
-          <CircularProgress
-            value={calculateTimePercentage()}
-            size={450}
-            thickness={3}
-            color="rgba(152, 252, 228, 1)"
-            trackColor="rgba(152, 252, 228, 0.1)"
-            className="absolute w-full hidden lg:block"
-          />
+            <CircularProgress
+              value={calculateTimePercentage()}
+              size={450}
+              thickness={3}
+              color="rgba(152, 252, 228, 1)"
+              trackColor="rgba(152, 252, 228, 0.1)"
+              className="absolute w-full hidden lg:block"
+            />
 
-          {/* Inner Circle - Supply Progress */}
-          <CircularProgress
-            value={getNftLeftPercentage()}
-            size={260}
-            thickness={4}
-            color="rgba(240, 253, 250, 1)"
-            trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute w-[90%] sm:hidden"
-          />
-          <CircularProgress
-            value={getNftLeftPercentage()}
-            size={310}
-            thickness={5}
-            color="rgba(240, 253, 250, 1)"
-            trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute w-[90%] hidden sm:block md:hidden"
-          />
-          <CircularProgress
-            value={getNftLeftPercentage()}
-            size={360}
-            thickness={5}
-            color="rgba(240, 253, 250, 1)"
-            trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute w-[90%] hidden md:block lg:hidden"
-          />
-          <CircularProgress
-            value={getNftLeftPercentage()}
-            size={410}
-            thickness={6}
-            color="rgba(240, 253, 250, 1)"
-            trackColor="rgba(240, 253, 250, 0.1)"
-            className="absolute w-[90%] hidden lg:block"
-          />
+            {/* Inner Circle - Supply Progress */}
+            <CircularProgress
+              value={getNftLeftPercentage()}
+              size={260}
+              thickness={4}
+              color="rgba(240, 253, 250, 1)"
+              trackColor="rgba(240, 253, 250, 0.1)"
+              className="absolute w-[90%] sm:hidden"
+            />
+            <CircularProgress
+              value={getNftLeftPercentage()}
+              size={310}
+              thickness={5}
+              color="rgba(240, 253, 250, 1)"
+              trackColor="rgba(240, 253, 250, 0.1)"
+              className="absolute w-[90%] hidden sm:block md:hidden"
+            />
+            <CircularProgress
+              value={getNftLeftPercentage()}
+              size={360}
+              thickness={5}
+              color="rgba(240, 253, 250, 1)"
+              trackColor="rgba(240, 253, 250, 0.1)"
+              className="absolute w-[90%] hidden md:block lg:hidden"
+            />
+            <CircularProgress
+              value={getNftLeftPercentage()}
+              size={410}
+              thickness={6}
+              color="rgba(240, 253, 250, 1)"
+              trackColor="rgba(240, 253, 250, 0.1)"
+              className="absolute w-[90%] hidden lg:block"
+            />
 
-          {/* Center Text */}
-          <div className="absolute inset-0 pt-10 flex flex-col items-center justify-center text-center z-10">
-            {isInactivePhase ? (
-              <>
-                <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
-                  INACTIVE
-                </h3>
-              </>
-            ) : undefined}
+            {/* Center Text */}
+            <div className="absolute inset-0 pt-10 flex flex-col items-center justify-center text-center z-10">
+              {isInactivePhase ? (
+                <>
+                  <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
+                    INACTIVE
+                  </h3>
+                </>
+              ) : undefined}
 
-            {isAuctionPhase ? (
-              <>
-                <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
-                  NEXT PRICE IN
-                </h3>
-                <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
-                  {timeUntilPriceUpdate}s
-                </p>
-              </>
-            ) : undefined}
+              {isAuctionPhase ? (
+                <>
+                  <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
+                    NEXT PRICE IN
+                  </h3>
+                  <p className="text-primary text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
+                    {timeUntilPriceUpdate}s
+                  </p>
+                </>
+              ) : undefined}
 
-            {isWhitelistPhase ? (
-              <>
-                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                  PUBLIC SALE STARTS IN
-                </h3>
-                <TimeRemaining
-                  startTime={saleInfo?.auctionSaleConfig.startTime}
-                />
-              </>
-            ) : undefined}
+              {isWhitelistPhase ? (
+                <>
+                  <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                    PUBLIC SALE STARTS IN
+                  </h3>
+                  <TimeRemaining
+                    startTime={saleInfo?.auctionSaleConfig.startTime}
+                  />
+                </>
+              ) : undefined}
 
-            {isFinishedPhase || isInactivePhase ? (
-              <>
-                <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                  RESERVE PRICE REACHED
-                </h3>
-              </>
-            ) : undefined}
+              {isFinishedPhase || isInactivePhase ? (
+                <>
+                  <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                    RESERVE PRICE REACHED
+                  </h3>
+                </>
+              ) : undefined}
 
-            <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
+              <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
 
-            <p className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
-              SUPPLY
-            </p>
+              <p className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
+                SUPPLY
+              </p>
 
-            <p className="text-primary text-xl sm:text-2xl font-herculanum">
-              {!saleInfo
-                ? "Loading..."
-                : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}
-            </p>
-            {saleInfo?.currentPhase === PHASE_AUCTION ? (
-              <div className="flex flex-col items-center justify-center !pt-5">
-                <span className="font-herculanum text-white mb-0.5 sm:mb-1">
-                  ENDS IN
-                </span>
-                <TimeRemaining startTime={saleInfo?.auctionEndTime} small />
-              </div>
-            ) : undefined}
-          </div>
+              <p className="text-primary text-xl sm:text-2xl font-herculanum">
+                {!saleInfo
+                  ? "Loading..."
+                  : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}
+              </p>
+              {saleInfo?.currentPhase === PHASE_AUCTION ? (
+                <div className="flex flex-col items-center justify-center !pt-5">
+                  <span className="font-herculanum text-white mb-0.5 sm:mb-1">
+                    ENDS IN
+                  </span>
+                  <TimeRemaining startTime={saleInfo?.auctionEndTime} small />
+                </div>
+              ) : undefined}
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </div>

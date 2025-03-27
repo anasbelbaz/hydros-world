@@ -112,8 +112,8 @@ export default function RevealDialog({
   
     const handleMouseMove = (e: MouseEvent) => {
       const rect = imageRef.current!.getBoundingClientRect();
-      targetX.current = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-      targetY.current = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+      targetX.current = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+      targetY.current = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
     };
   
     const handleMouseLeave = () => {

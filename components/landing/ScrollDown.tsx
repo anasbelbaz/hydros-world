@@ -1,9 +1,4 @@
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-} from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { DoubleArrowIcon } from "./DoubleArrowIcon";
 import { useState } from "react";
 
@@ -12,7 +7,7 @@ export function ScrollDown() {
 
   const [hasScrolled, setHasScrolled] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", scrollY =>
+  useMotionValueEvent(scrollY, "change", (scrollY) =>
     setHasScrolled(scrollY > 100 ? true : false)
   );
 

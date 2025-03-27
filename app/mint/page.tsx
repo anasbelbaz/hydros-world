@@ -27,7 +27,7 @@ import { Counter } from "@/components/Counter";
 import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import TimeRemaining from "@/components/TimeRemaining";
 import LiveView from "@/components/LiveView";
-import AuctionNotStarted from "@/components/AuctionNotStarted";
+// import AuctionNotStarted from "@/components/AuctionNotStarted";
 
 export default function MintPage() {
   const queryClient = useQueryClient();
@@ -138,13 +138,16 @@ export default function MintPage() {
       unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     }
 
-    const unitFloatPrice =  parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
-    const [integerPart, decimalPart] = unitFloatPrice.split('.');
+    const unitFloatPrice = parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
+    const [integerPart, decimalPart] = unitFloatPrice.split(".");
     const priceWithDecimal = decimalPart
-    ? `${integerPart}.<span class="decimal text-[10px]">${decimalPart.slice(0, 4)}</span>` // Prendre les 4 premiers chiffres après la virgule
-    : integerPart;
+      ? `${integerPart}.<span class="decimal text-[10px]">${decimalPart.slice(
+          0,
+          4
+        )}</span>` // Prendre les 4 premiers chiffres après la virgule
+      : integerPart;
 
-    return priceWithDecimal
+    return priceWithDecimal;
   };
 
   const getTotalPrice = () => {
@@ -160,13 +163,16 @@ export default function MintPage() {
     }
 
     const totalPrice = unitPrice * BigInt(mintAmount);
-    const totalFloatPrice = parseFloat(formatUnits(totalPrice, 18)).toFixed(4)
-    const [integerPart, decimalPart] = totalFloatPrice.split('.');
+    const totalFloatPrice = parseFloat(formatUnits(totalPrice, 18)).toFixed(4);
+    const [integerPart, decimalPart] = totalFloatPrice.split(".");
     const priceWithDecimal = decimalPart
-    ? `${integerPart}.<span class="decimal text-base">${decimalPart.slice(0, 4)}</span>` // Prendre les 4 premiers chiffres après la virgule
-    : integerPart;
+      ? `${integerPart}.<span class="decimal text-base">${decimalPart.slice(
+          0,
+          4
+        )}</span>` // Prendre les 4 premiers chiffres après la virgule
+      : integerPart;
 
-    return priceWithDecimal
+    return priceWithDecimal;
     // return parseFloat(formatUnits(totalPrice, 18)).toFixed(4);
   };
 
@@ -285,12 +291,12 @@ export default function MintPage() {
                 transition={{ duration: 0.5 }}
               >
                 <div className="-mb-4">
-                <Counter
-                  amount={mintAmount}
-                  handleIncrement={handleIncrement}
-                  handleDecrement={handleDecrement}
-                  getMaxAmount={getMaxMintAmount}
-                />
+                  <Counter
+                    amount={mintAmount}
+                    handleIncrement={handleIncrement}
+                    handleDecrement={handleDecrement}
+                    getMaxAmount={getMaxMintAmount}
+                  />
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
@@ -319,13 +325,17 @@ export default function MintPage() {
                     <HypeLogo className="w-[13px] h-[10px]" />
                   </div>
                   <div className="flex items-center gap-2 font-herculanum text-[16px]">
-                    <span>{isRefetching ? "..." : (
-                      <div
-                      dangerouslySetInnerHTML={{
-                        __html: getCurrentPrice(),
-                      }}
-                    />
-                    )}</span>
+                    <span>
+                      {isRefetching ? (
+                        "..."
+                      ) : (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: getCurrentPrice(),
+                          }}
+                        />
+                      )}
+                    </span>
                     <HypeLogo className="w-[9px] h-[7px]" />
                     <span>/ HYDRO</span>
                   </div>
@@ -351,10 +361,10 @@ export default function MintPage() {
                     >
                       <span className="z-10 flex items-center gap-2">
                         {mintProgress === "loading"
-                        ? "MINTING..."
-                        : `MINT ${mintAmount} HYDROS`}
+                          ? "MINTING..."
+                          : `MINT ${mintAmount} HYDROS`}
                       </span>
-                        <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                      <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
                     </Button>
                   </motion.div>
                   <span className="text-sm text-teal-50 font-herculanum">
@@ -575,22 +585,22 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
   useEffect(() => {
     if (!perspectiveEl.current) return;
-  
+
     const handleMouseMove = (e: MouseEvent) => {
       const rect = perspectiveEl.current!.getBoundingClientRect();
       targetX.current = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
       targetY.current = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
     };
-  
+
     const handleMouseLeave = () => {
       targetX.current = 0;
       targetY.current = 0;
     };
-  
+
     const element = perspectiveEl.current;
     element.addEventListener("mousemove", handleMouseMove);
     element.addEventListener("mouseleave", handleMouseLeave);
-  
+
     const animate = () => {
       animatedX.current = lerp(animatedX.current, targetX.current, 0.2);
       animatedY.current = lerp(animatedY.current, targetY.current, 0.2);
@@ -598,9 +608,9 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
       setMouseY(animatedY.current);
       rafId.current = requestAnimationFrame(animate);
     };
-  
+
     rafId.current = requestAnimationFrame(animate);
-  
+
     return () => {
       element.removeEventListener("mousemove", handleMouseMove);
       element.removeEventListener("mouseleave", handleMouseLeave);
@@ -630,13 +640,12 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex flex-col items-center justify-start  max-h-full"
         ref={perspectiveEl}
-        
       >
         <motion.div
-        whileHover={{scale: 1.04}}
-        transition={{ type: "spring", stiffness: 350, damping: 15 }}
-        className="w-full h-full flex flex-col items-center justify-start"
-        style={{ perspective: "500px", transformStyle: "preserve-3d"  }}
+          whileHover={{ scale: 1.04 }}
+          transition={{ type: "spring", stiffness: 350, damping: 15 }}
+          className="w-full h-full flex flex-col items-center justify-start"
+          style={{ perspective: "500px", transformStyle: "preserve-3d" }}
         >
           <motion.div
             className="group relative lg:w-[80%] w-auto aspect-square lg:h-auto h-[35vh] flex justify-center items-center"
@@ -647,8 +656,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             transition={{ type: "tween", duration: 0, ease: "easeOut" }}
           >
             <div className="animate-bg group-hover:opacity-[0.05] mix-blend-overlay opacity-0 transition-opacity duration-500 absolute w-[86%] h-[86%] rounded-full"></div>
-          
-      
+
             {/* Outer Circle - Timer Progress */}
             <CircularProgress
               value={calculateTimePercentage()}

@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 type NFT = {
@@ -73,6 +73,89 @@ export default function RevealDialog({
   const rarityClass = rarityStyles[rarityValue] || rarityStyles["common"];
   const rarityColor = rarityColors[rarityValue] || rarityColors["common"];
 
+  const imageRef = useRef<HTMLDivElement | null>(null);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const targetX = useRef(0);
+  const targetY = useRef(0);
+  const animatedX = useRef(0);
+  const animatedY = useRef(0);
+  const rafId = useRef(0);
+
+  const lerp = (start: number, end: number, factor: number) => {
+    return start + (end - start) * factor;
+  };
+
+  useEffect(() => {
+    if (!dialogOpen) {
+      setIsMounted(false);
+      return;
+    }
+
+    // On attend que le DOM soit complètement mis à jour
+    const observer = new MutationObserver(() => {
+      if (imageRef.current) {
+        setIsMounted(true);
+        observer.disconnect(); // On arrête d'observer une fois que l'élément est monté
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [dialogOpen]);
+
+  useEffect(() => {
+    if (!isMounted || !imageRef.current) return;
+  
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = imageRef.current!.getBoundingClientRect();
+      targetX.current = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+      targetY.current = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+    };
+  
+    const handleMouseLeave = () => {
+      targetX.current = 0;
+      targetY.current = 0;
+    };
+  
+    const element = imageRef.current;
+    element.addEventListener("mousemove", handleMouseMove);
+    element.addEventListener("mouseleave", handleMouseLeave);
+  
+    const animate = () => {
+      animatedX.current = lerp(animatedX.current, targetX.current, 0.2);
+      animatedY.current = lerp(animatedY.current, targetY.current, 0.2);
+      setMouseX(animatedX.current);
+      setMouseY(animatedY.current);
+      rafId.current = requestAnimationFrame(animate);
+    };
+  
+    rafId.current = requestAnimationFrame(animate);
+  
+    return () => {
+      element.removeEventListener("mousemove", handleMouseMove);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+      cancelAnimationFrame(rafId.current);
+    };
+  }, [isMounted]);
+
+  const attributeVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1 + 0.3,
+        type: "spring",
+        stiffness: 200,
+        damping: 15,
+        mass: 1,
+      },
+    }),
+  };
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -80,7 +163,7 @@ export default function RevealDialog({
         title="reveal hydros"
         className="!border-none !bg-transparent !shadow-none justify-around h-[85vh] !max-w-[100vw] w-[96vw] lg:w-[80vw] inset-0 translate-x-0 translate-y-0 m-auto p-0"
       >
-        <div className="flex flex-col h-full w-[96vw] lg:w-[80vw] justify-around mt-[3vh]">
+        <div className="flex flex-col h-full w-[96vw] lg:w-[80vw] justify-around mt-[3vh] xl:mt-[6vh]">
           <div className="flex-1 flex items-center justify-around">
             {/* Carousel implementation */}
             {revealedNFTs.length > 0 && (
@@ -118,34 +201,108 @@ export default function RevealDialog({
                               className="absolute w-full h-full rounded-2xl blur-3xl overflow-hidden scale-[1.15]"
                             >
                       </motion.div>
-                      {currentNFT && (
-                        <Image
-                          src={currentNFT.image}
-                          alt={currentNFT.name}
-                          fill
-                          className="image-slider object-cover rounded-lg"
-                        />
-                      )}
+                      <motion.div 
+                        className="w-full h-full" 
+                        ref={imageRef} 
+                        style={{ perspective: "800px", transformStyle: "preserve-3d"  }}
+                        whileHover={{
+                          scale: 1.04,
+                        }}
+                        transition={{ type: "spring", stiffness: 350, damping: 15 }}
+                      >
+                        <motion.div
+                          className="w-full h-full"
+                          animate={{
+                            rotateX: mouseY,
+                            rotateY: -mouseX,
+                          }}
+                          transition={{ type: "tween", duration: 0, ease: "easeOut" }}
+                        >
+                          {currentNFT && (   
+                            <Image
+                              src={currentNFT.image}
+                              alt={currentNFT.name}
+                              fill
+                              className="image-slider object-cover rounded-lg"
+                            />
+                          )}
+                        </motion.div>
+                      </motion.div>
                     </div>
 
                     {/* NFT Details - Right Side (Bottom on mobile) */}
-                    <div className="content-slider md:aspect-square w-full max-w-[80vw] md:max-w-[65vh] bg-[#FAFAFA0D] rounded-lg flex flex-col justify-center order-2">
+                    <motion.div 
+                      key={currentNFT.id}
+                      initial="hidden"
+                      animate="visible"
+                      className="content-slider md:aspect-square w-full max-w-[80vw] md:max-w-[65vh] bg-[#FAFAFA0D] rounded-lg flex flex-col justify-center order-2"
+                    >
                       {currentNFT && (
                         <div className="flex flex-col text-center max-w-[400px] w-full mx-auto lg:gap-[5vh] md:gap-[4vh] gap-[3vh] px-[2vw] p-4 md:p-6 lg:p-8">
                           <div>
-                            <p className="text-gray-400 text-xs sm:text-sm font-herculanum">
-                              HYDROS #{currentNFT.id}
-                            </p>
-                            <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-herculanum">
-                              {currentNFT.name}
-                            </h2>
+                            <motion.div
+                              variants={{
+                                hidden: { opacity: 0, y: 10 },
+                                visible: { 
+                                  opacity: 1, 
+                                  y: 0, 
+                                  transition: {
+                                    delay: 0,
+                                    type: "spring",
+                                    stiffness: 200,
+                                    damping: 15,
+                                    mass: 1 
+                                  }
+                                }
+                              }}
+                            >
+                              <p className="text-gray-400 text-xs sm:text-sm font-herculanum">
+                                HYDROS #{currentNFT.id}
+                              </p>
+                            </motion.div>
+                            <motion.div
+                              variants={{
+                                hidden: { opacity: 0, y: 10 },
+                                visible: { 
+                                  opacity: 1, 
+                                  y: 0, 
+                                  transition: {
+                                    delay: 0.1,
+                                    type: "spring",
+                                    stiffness: 200,
+                                    damping: 15,
+                                    mass: 1 
+                                  }
+                                }
+                              }}
+                            >
+                              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-herculanum">
+                                {currentNFT.name}
+                              </h2>
+                            </motion.div>
                           </div>
 
                           {/* Rarity Badge */}
                           {currentNFT.attributes.find(
                             (attr) => attr.trait_type.toLowerCase() === "rarity"
                           ) && (
-                            <div className="mb-[3vh]">
+                            <motion.div 
+                              className="mb-[3vh]"
+                              variants={{
+                                hidden: { opacity: 0, y: 10 },
+                                visible: { 
+                                  opacity: 1, 
+                                  y: 0, 
+                                  transition: {
+                                    delay: 0.2,
+                                    type: "spring",
+                                    stiffness: 200,
+                                    damping: 15,
+                                    mass: 1 
+                                  }
+                                }
+                              }}
+                            >
                               <span className={`inline-block px-2 py-1 sm:px-3 md:px-4 md:py-1 rounded-full font-herculanum text-xs md:text-sm font-medium uppercase ${rarityClass}`}>
                                 {
                                   currentNFT.attributes.find(
@@ -154,16 +311,17 @@ export default function RevealDialog({
                                   )?.value
                                 }
                               </span>
-                            </div>
+                            </motion.div>
                           )}
 
                           {/* Attributes List */}
-                          <div className="flex-1 overflow-auto">
-                            <div className="">
+                          <div className="flex-1 overflow-hidden">
                               {currentNFT.attributes.map((attr, index) => (
-                                <div
+                                <motion.div
                                   key={index}
                                   className="flex justify-between"
+                                  custom={index}
+                                  variants={attributeVariants}
                                 >
                                   <span className="text-gray-400 w-2/5 text-left uppercase font-herculanum  md:text-base">
                                     {attr.trait_type}
@@ -171,13 +329,12 @@ export default function RevealDialog({
                                   <span className="uppercase flex-1 text-left font-herculanum  md:text-base" style={{color: `${rarityColor}`}}>
                                     {attr.value}
                                   </span>
-                                </div>
+                                </motion.div>
                               ))}
-                            </div>
                           </div>
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   </div>
 
                   {/* Next button - only show if there are multiple NFTs */}

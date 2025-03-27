@@ -149,12 +149,12 @@
 .nav-link {
   position: relative;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
+  @apply text-sm;
 }
 
 .nav-link:hover {
@@ -262,7 +262,7 @@
   animation: rotate 400s linear infinite;
 }
 
-@keyframes mask-frame {
+/* @keyframes mask-frame {
   0% {
     -webkit-mask-position: 100% 0;
     mask-position: 100% 0;
@@ -274,13 +274,24 @@
     mask-position: 0% 0;
     opacity: 100;
 }
+} */
+
+@keyframes slider-in-image {
+  0% {
+    transform: scale(0.99);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+}
 }
 
 .slider-fade-in .image-slider {
-  mask-image: url("/images/mask.png");
+  /* mask-image: url("/images/mask.png");
   mask-size: 3000% auto;
-  mask-position: 100% 0;
-  animation: mask-frame 0.7s steps(29, end) 1 both;
+  mask-position: 100% 0; 
+  animation: mask-frame 0.7s steps(29, end) 1 both;*/
+  animation: slider-in-image 0.6s ease-out 1;
 }
 
 .image-slider {

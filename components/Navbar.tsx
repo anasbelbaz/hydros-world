@@ -143,10 +143,10 @@ export default function Navbar() {
               <Image
                 src="/images/hydros-logo.svg"
                 alt="Hydros Logo"
-                width={isMobile ? 60 : 120}
+                width={isMobile ? 50 : 100}
                 height={isMobile ? 30 : 60}
                 priority
-                className="transition-transform lg:w-[120px] lg:h-[60px] w-[60px] h-[30px]"
+                className="transition-transform lg:w-[100px] lg:h-[60px] w-[50px] h-[30px]"
               />
             </motion.div>
           </Link>

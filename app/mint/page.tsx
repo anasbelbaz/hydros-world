@@ -723,7 +723,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
               SUPPLY
             </p>
 
-            <p className="text-primary text-xl sm:text-2xl">
+            <p className="text-primary text-xl sm:text-2xl font-herculanum">
               {!saleInfo
                 ? "Loading..."
                 : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}

@@ -26,7 +26,7 @@ export function ScrollDown() {
         }}
         transition={{ duration: 0.7, type: "spring" }}
       >
-        <div className="uppercase font-serif text-green text-base font-herculanum">
+        <div className="uppercase text-green text-base font-herculanum">
           Scroll Down
         </div>
 

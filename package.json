@@ -20,6 +20,7 @@
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.5.0",
     "keccak256": "^1.0.6",
+    "lenis": "^1.2.3",
     "lucide-react": "^0.483.0",
     "merkletreejs": "^0.5.1",
     "motion": "^12.5.0",

@@ -180,7 +180,7 @@ export default function Home() {
               <motion.div
                 className="hidden md:block aspect-[275/86] w-[275px] bg-contain"
                 style={{
-                  backgroundImage: `url(/home-section-6-fg-1.webp)`,
+                  backgroundImage: `url(/landing/home-section-6-fg-1.webp)`,
                   x: useTransform(progress, [0, 0.5], [-50, 0]),
                 }}
               />
@@ -188,14 +188,14 @@ export default function Home() {
               <motion.div
                 className="aspect-[471/180] w-full max-w-[471px] bg-contain"
                 style={{
-                  backgroundImage: `url(/home-section-6-fg-2.webp)`,
+                  backgroundImage: `url(/landing/home-section-6-fg-2.webp)`,
                 }}
               />
 
               <motion.div
                 className="hidden md:block aspect-[201/174] w-[201px] bg-contain"
                 style={{
-                  backgroundImage: `url(/home-section-6-fg-3.webp)`,
+                  backgroundImage: `url(/landing/home-section-6-fg-3.webp)`,
                   x: useTransform(progress, [0, 0.5], [50, 0]),
                 }}
               />
@@ -245,6 +245,9 @@ export default function Home() {
                   y: useTransform(progress, [0, 1], [300, -300]),
                   opacity: useTransform(progress, [0.3, 0.5, 1], [0, 1, 0]),
                 }}
+                whileHover={{ scale: 0.95 }}
+                whileTap={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 600, damping: 20 }}
               >
                 <Button asChild>
                   <a href="https://discord.hydros.world" target="_blank">

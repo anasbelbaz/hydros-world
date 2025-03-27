@@ -11,7 +11,7 @@ export function Button({
   const Component = asChild ? Root : "button";
 
   return (
-    <Component className="bg-green px-8 py-4 rounded-full flex gap-4 items-center font-serif text-black text-base">
+    <Component className="bg-green px-8 py-4 rounded-full flex gap-4 items-center font-herculanum text-black text-base">
       {children}
     </Component>
   );

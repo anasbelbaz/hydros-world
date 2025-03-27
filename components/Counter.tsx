@@ -30,8 +30,20 @@ export function Counter({
           className="border-none w-10 h-10 rounded-full bg-transparent text-teal-400 border-teal-400/50 hover:bg-transparent hover:text-teal-300 opacity-30 hover:opacity-100"
           disabled={amount <= 1 || disabled}
         >
-          <svg width="16" height="2" viewBox="0 0 16 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1H15" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="16"
+            height="2"
+            viewBox="0 0 16 2"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1H15"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </Button>
       </motion.div>
@@ -58,8 +70,20 @@ export function Counter({
           className="border-none w-10 h-10 rounded-full bg-transparent text-teal-400 border-teal-400/50 hover:bg-transparent hover:text-teal-300 opacity-30 hover:opacity-100"
           disabled={amount >= getMaxAmount() || disabled}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 1V15M1 8H15" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 1V15M1 8H15"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </Button>
       </motion.div>

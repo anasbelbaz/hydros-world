@@ -137,7 +137,13 @@ export default function MintPage() {
       unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
     }
 
-    return parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
+    const unitFloatPrice =  parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
+    const [integerPart, decimalPart] = unitFloatPrice.split('.');
+    const priceWithDecimal = decimalPart
+    ? `${integerPart}.<span class="decimal text-[10px]">${decimalPart.slice(0, 4)}</span>` // Prendre les 4 premiers chiffres après la virgule
+    : integerPart;
+
+    return priceWithDecimal
   };
 
   const getTotalPrice = () => {
@@ -153,7 +159,14 @@ export default function MintPage() {
     }
 
     const totalPrice = unitPrice * BigInt(mintAmount);
-    return parseFloat(formatUnits(totalPrice, 18)).toFixed(4);
+    const totalFloatPrice = parseFloat(formatUnits(totalPrice, 18)).toFixed(4)
+    const [integerPart, decimalPart] = totalFloatPrice.split('.');
+    const priceWithDecimal = decimalPart
+    ? `${integerPart}.<span class="decimal text-base">${decimalPart.slice(0, 4)}</span>` // Prendre les 4 premiers chiffres après la virgule
+    : integerPart;
+
+    return priceWithDecimal
+    // return parseFloat(formatUnits(totalPrice, 18)).toFixed(4);
   };
 
   const getPhaseTitle = () => {
@@ -295,13 +308,23 @@ export default function MintPage() {
                           Fetching new price...
                         </motion.span>
                       ) : (
-                        getTotalPrice()
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: getTotalPrice(),
+                          }}
+                        />
                       )}
                     </span>{" "}
                     <HypeLogo className="w-[13px] h-[10px]" />
                   </div>
                   <div className="flex items-center gap-2 font-herculanum text-[16px]">
-                    <span>{isRefetching ? "..." : getCurrentPrice()}</span>
+                    <span>{isRefetching ? "..." : (
+                      <div
+                      dangerouslySetInnerHTML={{
+                        __html: getCurrentPrice(),
+                      }}
+                    />
+                    )}</span>
                     <HypeLogo className="w-[9px] h-[7px]" />
                     <span>/ HYDRO</span>
                   </div>

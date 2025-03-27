@@ -8,7 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ConnectButton } from "./ConnectButton";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 
-export default function Navbar() {
+interface NavbarProps {
+  className?: string;
+}
+
+export default function Navbar({ className = "" }: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
@@ -46,7 +50,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="w-full py-6 px-4 lg:px-8 bg-transparent fixed z-50">
+    <header className={`w-full py-6 px-4 lg:px-8 bg-transparent fixed z-50 transition-all duration-300 ${className}`}>
       <div className="mx-auto flex items-center justify-between">
         {/* Hamburger Menu (Mobile) */}
         <div className="lg:hidden z-20">

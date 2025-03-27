@@ -173,6 +173,16 @@
   content: none;
 }
 
+.navbar-dark {
+  /* filter: brightness(0.5);
+  mix-blend-mode: luminosity; */
+  /* filter: brightness(0.6);
+  mix-blend-mode: color-burn; */
+
+  filter: sepia(10) hue-rotate(118deg) saturate(7) brightness(0.8);
+    mix-blend-mode: multiply;
+}
+
 .whitelist-button {
   background: linear-gradient(
     to bottom,

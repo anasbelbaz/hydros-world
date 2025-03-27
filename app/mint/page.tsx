@@ -27,6 +27,7 @@ import { Counter } from "@/components/Counter";
 import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import TimeRemaining from "@/components/TimeRemaining";
 import LiveView from "@/components/LiveView";
+import AuctionNotStarted from "@/components/AuctionNotStarted";
 
 export default function MintPage() {
   const queryClient = useQueryClient();
@@ -608,13 +609,13 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
   }, []);
 
   return (
-    <div className="text-center relative overflow-visible w-full max-w-[550px] mx-auto">
+    <div className="text-center relative overflow-visible w-full max-w-[550px] lg:max-h-full max-h-[35vh] mx-auto md:mt-0 mt-[6vh]">
       {/* Pre-launch circle as absolutely positioned element with background image */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.8 }}
-        className="absolute animate-rotate w-full top-[-10%] aspect-square pointer-events-none mix-blend-multiply"
+        className="absolute animate-rotate w-full transform scale-125 aspect-square max-h-full pointer-events-none mix-blend-multiply"
         style={{
           backgroundImage: "url('/images/pre-launch-circle.png')",
           backgroundSize: "contain",
@@ -627,7 +628,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="flex flex-col items-center justify-start"
+        className="flex flex-col items-center justify-start  max-h-full"
         ref={perspectiveEl}
         
       >
@@ -638,7 +639,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
         style={{ perspective: "500px", transformStyle: "preserve-3d"  }}
         >
           <motion.div
-            className="group relative w-[80%] aspect-square flex justify-center items-center"
+            className="group relative lg:w-[80%] w-auto aspect-square lg:h-auto h-[35vh] flex justify-center items-center"
             animate={{
               rotateX: mouseY,
               rotateY: -mouseX,
@@ -720,7 +721,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             />
 
             {/* Center Text */}
-            <div className="absolute inset-0 pt-10 flex flex-col items-center justify-center text-center z-10">
+            <div className="absolute inset-0 lg:pt-10 pt-4 px-4 flex flex-col items-center justify-center text-center z-10">
               {isInactivePhase ? (
                 <>
                   <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">

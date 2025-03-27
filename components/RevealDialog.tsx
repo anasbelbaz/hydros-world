@@ -175,7 +175,7 @@ export default function RevealDialog({
                     <Button
                       onClick={() => handleNavigate("prev")}
                       disabled={!canNavigatePrev()}
-                      className={`flex-shrink-0 w-13 h-10 rounded-full flex items-center justify-center order-1 
+                      className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center order-1 
                       ${
                         canNavigatePrev()
                           ? "bg-[#98FCE433] hover:bg-[#98FCE433]/30 text-teal-50"
@@ -238,7 +238,7 @@ export default function RevealDialog({
                       className="content-slider md:aspect-square w-full max-w-[80vw] md:max-w-[65vh] bg-[#FAFAFA0D] rounded-lg flex flex-col justify-center order-2"
                     >
                       {currentNFT && (
-                        <div className="flex flex-col text-center max-w-[400px] w-full mx-auto lg:gap-[5vh] md:gap-[4vh] gap-[3vh] px-[2vw] p-4 md:p-6 lg:p-8">
+                        <div className="flex flex-col text-center max-w-[400px] w-full mx-auto lg:gap-[5vh] md:gap-[4vh] gap-[3vh] px-[4vw] py-4 md:py-6 lg:py-8">
                           <div>
                             <motion.div
                               variants={{

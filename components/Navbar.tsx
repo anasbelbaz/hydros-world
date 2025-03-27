@@ -50,7 +50,7 @@ export default function Navbar({ className = "" }: NavbarProps) {
   ];
 
   return (
-    <header className={`w-full py-6 px-4 lg:px-8 bg-transparent fixed z-50 transition-all duration-300 ${className}`}>
+    <header className={`w-full py-6 px-4 lg:px-8 bg-transparent fixed z-50 transition-all duration-300 ${ isMenuOpen ? '' : className}`}>
       <div className="mx-auto flex items-center justify-between">
         {/* Hamburger Menu (Mobile) */}
         <div className="lg:hidden z-20">

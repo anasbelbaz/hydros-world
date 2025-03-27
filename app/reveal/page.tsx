@@ -344,7 +344,7 @@ export default function RevealPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex justify-center relative lg:h-full h-[50vh] mt-auto order-2 lg:order-1"
+              className="flex justify-center relative lg:h-full h-[35vh] mt-auto order-2 lg:order-1"
             >
               <div className="relative w-full flex items-end justify-center levitating">
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full h-full">

@@ -134,7 +134,7 @@ export default function MintPage() {
     if (saleInfo.currentPhase === PHASE_WHITELIST) {
       unitPrice = saleInfo.whitelistSaleConfig.price;
     } else {
-      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
+      unitPrice = saleInfo.currentPrice;
     }
 
     return parseFloat(formatUnits(unitPrice, 18)).toFixed(4);

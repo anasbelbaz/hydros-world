@@ -342,3 +342,15 @@
 .slider-fade-out .content-slider {
   animation: slider-out-content 0.9s cubic-bezier(0.25, 1, 0.5, 1) 1;
 }
+
+.text-green {
+  color: rgb(152 252 228);
+}
+
+.stroke-green {
+  stroke:  rgb(152 252 228);
+}
+
+.bg-green {
+  background-color: rgb(152 252 228);
+}

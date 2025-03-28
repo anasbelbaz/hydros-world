@@ -124,7 +124,7 @@ export default function CollectionPage() {
 
   return (
     <ClientOnly>
-      <div className="w-full mx-auto px-4 pt-5 pb-2">
+      <div className="w-full mx-auto  max-w-7xl px-4 pt-5 pb-2">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export default function CollectionPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-6 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 md:grid-cols-4 gap-4">
                 {displayedTokens.map((tokenId) => (
                   <div key={tokenId} className="flex justify-center">
                     <NFTCard tokenId={tokenId} tokenURI={tokenURIs[tokenId]} />

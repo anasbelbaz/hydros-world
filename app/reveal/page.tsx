@@ -335,7 +335,7 @@ export default function RevealPage() {
 
   return (
     <>
-      <div className="w-full flex-1 mx-auto px-4 flex flex-col relative">
+      <div className="w-full flex-1 mx-auto  max-w-7xl px-4 flex flex-col relative">
         <div className="flex flex-col w-full flex-1">
           {/* Main content grid - two columns on desktop, stacked on mobile */}
           <div className="grid grid-cols-1 lg:grid-cols-2 w-full items-start flex-1">

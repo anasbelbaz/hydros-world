@@ -88,7 +88,7 @@ export default function Navbar({ className = "" }: NavbarProps) {
             >
               {link.label}{" "}
               {link.href === "/reveal" && unrevealedTokens?.length > 0 && (
-                <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-2 py-1 rounded-full ">
+                <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-3 py-1 rounded-full ">
                   {unrevealedTokens?.length}
                 </span>
               )}

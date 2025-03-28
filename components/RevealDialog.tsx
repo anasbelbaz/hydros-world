@@ -188,8 +188,8 @@ export default function RevealDialog({
                   )}
 
                   <div
-                    className={`flex flex-col md:flex-row justify-center items-center ${
-                      isSingleNFT ? "w-full" : "w-full md:gap-10 gap-[4vh]"
+                    className={`max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center md:gap-10 gap-[4vh] ${
+                      isSingleNFT ? "w-full" : "w-full"
                     } order-2 slider ${fadeClass}`}
                   >
                     {/* NFT Image - Left Side (Top on mobile) */}

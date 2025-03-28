@@ -156,7 +156,7 @@ export default function CollectionPage() {
                   >
                 <Link
                   href='/mint'
-                  className=''
+                  className='w-fit mx-auto'
                 >
                   <Button className="relative overflow-hidden group bg-[#98FCE422] hover:bg-[#98FCE422] backdrop-blur-lg text-white border border-[#98FCE4]">
                   <span className="z-10 flex items-center gap-2">

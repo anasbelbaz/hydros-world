@@ -115,10 +115,10 @@ export default function LiveView() {
           }`}
         >
           <Users className="w-4 h-4 text-primary animate-pulse" />
-          <span className="transition-all duration-300">
+          <span className="transition-all duration-300 font-herculanum">
             {viewers.toLocaleString()}
           </span>
-          <span className="text-xs text-gray-400">viewers</span>
+          <span className="text-xs text-gray-400 font-herculanum">viewers</span>
         </div>
       </div>
     </div>

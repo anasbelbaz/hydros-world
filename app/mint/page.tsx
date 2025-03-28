@@ -736,7 +736,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                     NEXT PRICE IN
                   </h3>
                   <p className="text-primary font-herculanum text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">
-                    {timeUntilPriceUpdate}s
+                    {timeUntilPriceUpdate}<span className="text-base sm:text-md">s</span>
                   </p>
                 </>
               ) : undefined}

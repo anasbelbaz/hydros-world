@@ -161,7 +161,7 @@ export default function RevealDialog({
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent
         title="reveal hydros"
-        className="!border-none !bg-transparent !shadow-none justify-around h-[85vh] !max-w-[100vw] w-[96vw] lg:w-[80vw] inset-0 translate-x-0 translate-y-0 m-auto p-0"
+        className="!border-none !bg-transparent !shadow-none z-20 justify-around h-[85vh] !max-w-[100vw] w-[96vw] lg:w-[80vw] inset-0 translate-x-0 translate-y-0 m-auto p-0"
       >
         <div className="flex flex-col h-full w-[96vw] lg:w-[80vw] justify-around mt-[3vh] xl:mt-[6vh]">
           <div className="flex-1 flex items-center justify-around">

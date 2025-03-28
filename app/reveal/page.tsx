@@ -351,8 +351,8 @@ export default function RevealPage() {
                   <Image
                     src="/images/artefact_hand.png"
                     alt="Hydros Artifact"
-                    width={761}
-                    height={757}
+                    width={1200}
+                    height={1200}
                     priority
                     className="object-contain mt-auto absolute inset-0 left-1/2 transform -translate-x-1/2 w-full lg:min-w-[70vh] xl:min-w-[80vh] max-w-[1000px] lg:max-h-[80vh] max-h-full h-auto"
                   />

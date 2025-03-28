@@ -346,3 +346,7 @@
 .bg-green {
   background-color: rgb(152 252 228);
 }
+
+body {
+  pointer-events: auto !important;
+}

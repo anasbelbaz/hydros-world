@@ -354,7 +354,7 @@ export default function RevealPage() {
                     width={761}
                     height={757}
                     priority
-                    className="object-contain mt-auto absolute inset-0 left-1/2 transform -translate-x-1/2 w-full max-w-[1000px] lg:max-h-[80vh] max-h-full h-auto"
+                    className="object-contain mt-auto absolute inset-0 left-1/2 transform -translate-x-1/2 w-full lg:min-w-[70vh] xl:min-w-[80vh] max-w-[1000px] lg:max-h-[80vh] max-h-full h-auto"
                   />
 
                   {/* Glowing orb overlay */}
@@ -392,9 +392,9 @@ export default function RevealPage() {
                 </div>
 
                 <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                whileHover={{ scale: 0.95 }}
+                whileTap={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 600, damping: 20 }}
                   className="w-full max-w-[300px]"
                 >
                   <Button
@@ -405,13 +405,16 @@ export default function RevealPage() {
                       isLoading ||
                       getMaxRevealAmount() === 0
                     }
-                    className="p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
+                    className="relative overflow-hidden group p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
                   >
+                    <span className="z-10 flex items-center gap-2">
                     {!isRevealEnabled
                       ? "Reveal not enabled"
                       : isRevealing
                       ? "Revealing..."
                       : `Reveal ${revealAmount} Hydros`}
+                      </span>
+                      <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
                   </Button>
                 </motion.div>
 

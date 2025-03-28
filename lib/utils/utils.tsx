@@ -23,8 +23,8 @@ export function HypeLogo({
 }
 
 export function Avatar({
-  width = 30,
-  height = 30,
+  width = 40,
+  height = 40,
   className = "ml-1",
   onClick,
 }: {

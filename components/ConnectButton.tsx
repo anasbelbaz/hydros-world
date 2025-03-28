@@ -39,8 +39,8 @@ export function ConnectButton() {
     if (!addr) return "";
 
     return isMobile
-      ? `${addr.slice(0, 4)}...${addr.slice(-4).toUpperCase()}.HL`
-      : `${addr.slice(0, 6)}...${addr.slice(-6).toUpperCase()}.HL`;
+      ? `${addr.slice(0, 4)}...${addr.slice(-4).toUpperCase()}`
+      : `${addr.slice(0, 6)}...${addr.slice(-6).toUpperCase()}`;
   };
 
   // Only render the actual content after component has mounted on the client
@@ -176,14 +176,14 @@ export function ConnectButton() {
                 <div className="flex items-end gap-1">
                   <div className="flex flex-col items-end space-x-2">
                     <span
-                      className="uppercase font-herculanum text-xs lg:text-sm text-[#98FCE4]"
+                      className="uppercase font-herculanum text-sm lg:text-base text-[#98FCE4]"
                       style={{ fontFamily: "'Herculanum', sans-serif" }}
                     >
                       {formatAddress(address || "")}
                     </span>
-                    <div className="bg-transparent px-2 rounded-full flex items-center space-x-1 border border-[#98FCE4]/30">
+                    <div className="bg-transparent px-2 flex items-center space-x-1">
                       <span
-                        className="text-[#98FCE4] font-herculanum text-xs lg:text-sm"
+                        className="font-herculanum text-sm lg:text-base"
                         style={{ fontFamily: "'Herculanum', sans-serif" }}
                       >
                         {userInfos?.nativeBalance

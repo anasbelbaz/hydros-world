@@ -13,6 +13,8 @@ import {
   LoadingPlaceholders,
   ITEMS_PER_PAGE,
 } from "./utils";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 // Dynamically import motion components with no SSR to avoid hydration issues
 const MotionDiv = dynamic(
@@ -141,10 +143,29 @@ export default function CollectionPage() {
           </div>
 
           {!isConnected ? (
-            <div className="price-table px-4 py-2 text-center w-max-w-[400px] mx-auto">
-              <p className="text-muted-foreground mb-8">
-                Please connect your wallet to view your collection.
+            <div className="px-4 py-2 mt-[12vh] text-center w-max-w-[400px] mx-auto">
+              <p className="text-muted-foreground font-herculanum mb-8">
+                You currently own no Hydros
               </p>
+              
+              <motion.div
+                    whileHover={{ scale: 0.95 }}
+                    whileTap={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                    className="w-full"
+                  >
+                <Link
+                  href='/mint'
+                  className=''
+                >
+                  <Button className="relative overflow-hidden group bg-[#98FCE422] hover:bg-[#98FCE422] backdrop-blur-lg text-white border border-[#98FCE4]">
+                  <span className="z-10 flex items-center gap-2">
+                    Mint your hydros now
+                    </span>
+                    <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-[#98FCE4] min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                  </Button>
+                </Link>
+              </motion.div>
             </div>
           ) : loading ? (
             <>

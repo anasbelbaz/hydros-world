@@ -152,7 +152,7 @@ export default function CollectionPage() {
                     whileHover={{ scale: 0.95 }}
                     whileTap={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 600, damping: 20 }}
-                    className="w-full"
+                    className="w-fit mx-auto"
                   >
                 <Link
                   href='/mint'

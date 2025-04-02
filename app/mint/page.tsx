@@ -136,7 +136,7 @@ export default function MintPage() {
     if (saleInfo.currentPhase === PHASE_WHITELIST) {
       unitPrice = saleInfo.whitelistSaleConfig.price;
     } else {
-      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
+      unitPrice = saleInfo.currentPrice;
     }
 
     const unitFloatPrice = parseFloat(formatUnits(unitPrice, 18)).toFixed(4);
@@ -160,7 +160,7 @@ export default function MintPage() {
     if (saleInfo.currentPhase === PHASE_WHITELIST) {
       unitPrice = saleInfo.whitelistSaleConfig.price;
     } else {
-      unitPrice = saleInfo.currentPrice || saleInfo.auctionSaleConfig.price;
+      unitPrice = saleInfo.currentPrice;
     }
 
     const totalPrice = unitPrice * BigInt(mintAmount);
@@ -309,7 +309,9 @@ export default function MintPage() {
                             ease: "easeInOut",
                           }}
                         >
-                          Fetching new price...
+                          {saleInfo?.currentPhase === PHASE_WHITELIST
+                            ? "Fetching price..."
+                            : "Fetching new price..."}
                         </motion.span>
                       ) : (
                         <div

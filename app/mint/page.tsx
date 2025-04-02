@@ -28,6 +28,7 @@ import { useUserInfos } from "@/lib/hooks/useUserInfos";
 import TimeRemaining from "@/components/TimeRemaining";
 import LiveView from "@/components/LiveView";
 import AuctionNotStarted from "@/components/AuctionNotStarted";
+import AuctionEnded from "@/components/AuctionEnded";
 // import AuctionNotStarted from "@/components/AuctionNotStarted";
 
 export default function MintPage() {
@@ -251,10 +252,8 @@ export default function MintPage() {
     }
   };
 
-  console.log(saleInfo?.currentPhase);
-
-  if (saleInfo?.currentPhase === PHASE_INACTIVE) {
-    return <AuctionNotStarted />;
+  if (saleInfo?.currentPhase === PHASE_FINISHED) {
+    return <AuctionEnded />;
   }
 
   if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
@@ -563,6 +562,8 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             nextUpdateTimestamp + Number(saleInfo.priceUpdateInterval);
           setNextUpdateTimestamp(nextTimestamp);
         }
+      } else {
+        refetch();
       }
     }, 1000);
 
@@ -738,13 +739,13 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
             {/* Center Text */}
             <div className="absolute inset-0 lg:pt-10 pt-4 px-4 flex flex-col items-center justify-center text-center z-10">
-              {isInactivePhase ? (
+              {/* {isInactivePhase ? (
                 <>
                   <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
-                    INACTIVE
+                    PAUSED
                   </h3>
                 </>
-              ) : undefined}
+              ) : undefined} */}
 
               {saleInfo?.isAuctionEnded ? (
                 <>

@@ -139,8 +139,9 @@
   font-family: "Herculanum", "Rajdhani", sans-serif;
   letter-spacing: 0%;
   font-weight: 400;
-  color: rgba(152, 252, 228, 1);
-  text-shadow: 0 0 15px rgba(152, 252, 228, 0.5);
+  color: rgba(255, 255, 255, 1);
+  /*color: rgba(152, 252, 228, 1);
+  text-shadow: 0 0 15px rgba(152, 252, 228, 0.5);*/
   font-size: 40px;
   line-height: 42px;
 }
@@ -148,12 +149,12 @@
 .nav-link {
   position: relative;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
+  @apply text-sm;
 }
 
 .nav-link:hover {
@@ -163,31 +164,23 @@
 
 .nav-link.active {
   color: white;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(4px);
   border-bottom: 2px solid rgba(152, 252, 228, 1);
-  box-shadow: 0 4px 15px rgba(152, 252, 228, 0.3);
+  background-color: rgba(152, 252, 228, 0.05);
 }
 
 .nav-link.active::after {
   content: none;
 }
 
-.whitelist-button {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 200, 0, 1),
-    rgba(203, 122, 10, 1)
-  );
-  border: none;
-  color: #000;
-  font-family: "Herculanum", "Rajdhani", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  padding: 4px 16px;
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s ease;
+.navbar-dark {
+  /* filter: brightness(0.5);
+  mix-blend-mode: luminosity; */
+  /* filter: brightness(0.6);
+  mix-blend-mode: color-burn; */
+
+  filter: sepia(10) hue-rotate(118deg) saturate(7) brightness(0.8);
+    mix-blend-mode: multiply;
 }
 
 .whitelist-button:hover {
@@ -196,11 +189,9 @@
 }
 
 .price-table {
-  background: rgba(13, 43, 56, 0.3);
-  border: 1px solid rgba(152, 252, 228, 0.3);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  background: rgba(255,255,255, 0.05);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(8px);
 }
 
 .countdown-digit {
@@ -218,4 +209,144 @@
   color: rgba(255, 255, 255, 0.7);
   margin-top: -0.5rem;
   letter-spacing: 0.05em;
+}
+
+@keyframes levitation {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(10px) rotate(-1deg); } /* Monte légèrement */
+  100% { transform: translateY(0); }
+}
+
+.levitating {
+  animation: levitation 5s ease-in-out infinite;
+}
+
+ 
+@keyframes background-frame {
+  0% {
+    -webkit-background-position: 100% 0;
+    background-position: 100% 0;
+}
+100% {
+    -webkit-background-position: 0% 0;
+    background-position: 0% 0;
+}
+}
+
+.animate-bg {
+  background-color: #ffffff01;
+  background-image: url("/images/bg-animate.png");
+  background-size: 5000% auto;
+  background-position: 100% 0;
+  animation: background-frame 1.6s steps(49, end) infinite both;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+}
+100% {
+    transform: rotate(-360deg);
+}
+}
+
+.animate-rotate {
+  animation: rotate 400s linear infinite;
+}
+
+/* @keyframes mask-frame {
+  0% {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    opacity: 0;
+    transform: scale(0.99);
+}
+100% {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+    opacity: 100;
+}
+} */
+
+@keyframes slider-in-image {
+  0% {
+    transform: scale(0.99);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+}
+}
+
+.slider-fade-in .image-slider {
+  /* mask-image: url("/images/mask.png");
+  mask-size: 3000% auto;
+  mask-position: 100% 0; 
+  animation: mask-frame 0.7s steps(29, end) 1 both;*/
+  animation: slider-in-image 0.6s ease-out 1;
+}
+
+.image-slider {
+  mask: none;
+}
+
+@keyframes slider-out-image {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: scale(1.01);
+    opacity: 0;
+}
+}
+
+.slider-fade-out .image-slider  {
+  animation: slider-out-image 0.6s ease-out 1;
+}
+
+
+@keyframes slider-in-content {
+  0%, 20% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+}
+}
+
+@keyframes slider-out-content {
+  0%, 20% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+}
+}
+
+.slider-fade-in .content-slider {
+  animation: slider-in-content 1.2s cubic-bezier(0.25, 1, 0.5, 1) 1;
+}
+
+.slider-fade-out .content-slider {
+  animation: slider-out-content 0.9s cubic-bezier(0.25, 1, 0.5, 1) 1;
+}
+
+.text-green {
+  color: rgb(152 252 228);
+}
+
+.stroke-green {
+  stroke:  rgb(152 252 228);
+}
+
+.bg-green {
+  background-color: rgb(152 252 228);
+}
+
+body {
+  pointer-events: auto !important;
 }

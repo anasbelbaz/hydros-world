@@ -55,9 +55,9 @@ export const NFTCard: React.FC<NFTCardProps> = ({
     const mouseY = e.clientY - centerY;
 
     // Convert to rotation angles (limit to ±15 degrees)
-    const maxRotation = 15;
-    const rotX = (mouseY / (rect.height / 2)) * -maxRotation; // Invert Y axis
-    const rotY = (mouseX / (rect.width / 2)) * maxRotation;
+    const maxRotation = 10;
+    const rotX = (mouseY / (rect.height / 2)) * maxRotation;
+    const rotY = (mouseX / (rect.width / 2)) * -maxRotation;
 
     setRotateX(rotX);
     setRotateY(rotY);
@@ -142,6 +142,17 @@ export const NFTCard: React.FC<NFTCardProps> = ({
     return rarityAttr?.value.toUpperCase() || null;
   };
 
+  const rarityStyles: Record<string, string> = {
+    common: "bg-[#98FCE4] text-black",
+    rare: "bg-[#6CC50C] text-white",
+    legendary: "bg-gradient-to-r from-[#FCC400] to-[#CC7C09] text-black",
+    mythic: "bg-gradient-to-r from-[#E4205E] to-[#E420AB] text-black",
+  };
+
+  const rarityAttribute = getRarity()
+  const rarityValue = rarityAttribute ? rarityAttribute.toLowerCase() : "common";
+  const rarityClass = rarityStyles[rarityValue] || rarityStyles["common"];
+
   // Create NFT object for RevealDialog
   const nftForDialog = metadata
     ? {
@@ -156,7 +167,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({
     <>
       <motion.div
         ref={cardRef}
-        className="relative w-full max-h-[320px] max-w-[212px] rounded-lg overflow-hidden backdrop-blur-2xl perspective-1000 group cursor-pointer"
+        className="relative w-full rounded-lg overflow-hidden backdrop-blur-2xl perspective-1000 group cursor-pointer"
         style={{
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
           transition: isHovering
@@ -248,10 +259,10 @@ export const NFTCard: React.FC<NFTCardProps> = ({
         <div className="p-3 space-y-2">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <div className="text-gray-300 text-xs font-herculanum uppercase">
+              <div className="text-white/50 text-xs font-herculanum uppercase">
                 {metadata?.name || `HYDROS CITIZEN #${tokenId}`}
               </div>
-              <div className="text-teal-50 font-herculanum font-bold text-lg">
+              <div className="text-white font-herculanum text-lg">
                 #{tokenId}
               </div>
             </div>
@@ -260,7 +271,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({
             </div>
           </div>
           <div className="grid items-center">
-            <div className="bg-primary text-black text-xs rounded-full px-3 font-herculanum py-1 font-medium w-fit">
+            <div className={`text-xs rounded-full px-3 font-herculanum py-1 w-fit ${rarityClass}`}>
               {getRarity() || (
                 <motion.div
                   animate={{ opacity: [0.5, 1, 0.5] }}

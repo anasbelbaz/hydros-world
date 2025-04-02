@@ -4,7 +4,7 @@ export function PriceTablesLoading() {
   return (
     <div className="grid grid-cols-2 gap-4">
       <motion.div
-        className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 border border-primary/20 rounded-lg overflow-hidden h-full"
+        className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 border border-primary/20 rounded-lg overflow-hidden h-full"
         initial={{ opacity: 0.5 }}
         animate={{
           opacity: [0.5, 0.7, 0.5],
@@ -55,7 +55,7 @@ export function PriceTablesLoading() {
       </motion.div>
 
       <motion.div
-        className="price-table p-6 backdrop-blur-sm bg-[#0A1E23]/30 border border-primary/20 rounded-lg overflow-hidden h-full"
+        className="price-table px-4 py-2 backdrop-blur-sm bg-[#0A1E23]/30 border border-primary/20 rounded-lg overflow-hidden h-full"
         initial={{ opacity: 0.5 }}
         animate={{
           opacity: [0.5, 0.7, 0.5],

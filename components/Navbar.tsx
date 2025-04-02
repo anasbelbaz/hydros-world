@@ -8,7 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ConnectButton } from "./ConnectButton";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 
-export default function Navbar() {
+interface NavbarProps {
+  className?: string;
+}
+
+export default function Navbar({ className = "" }: NavbarProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
@@ -46,7 +50,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="w-full py-6 px-4 lg:px-8 bg-transparent relative z-50">
+    <header className={`w-full py-6 px-4 lg:px-8 bg-transparent fixed z-50 transition-all duration-300 ${ isMenuOpen ? '' : className}`}>
       <div className="mx-auto flex items-center justify-between">
         {/* Hamburger Menu (Mobile) */}
         <div className="lg:hidden z-20">
@@ -83,13 +87,11 @@ export default function Navbar() {
               style={{ fontFamily: "'Herculanum', 'Rajdhani', sans-serif" }}
             >
               {link.label}{" "}
-              {link.href === "/reveal" &&
-                unrevealedTokens?.length &&
-                unrevealedTokens?.length > 0 && (
-                  <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-2 py-1 rounded-full">
-                    {unrevealedTokens?.length}
-                  </span>
-                )}
+              {link.href === "/reveal" && unrevealedTokens?.length > 0 && (
+                <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-3 py-1 rounded-full ">
+                  {unrevealedTokens?.length}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -143,12 +145,12 @@ export default function Navbar() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Image
-                src="/images/hydros-logo.png"
+                src="/images/hydros-logo.svg"
                 alt="Hydros Logo"
-                width={isMobile ? 60 : 120}
+                width={isMobile ? 50 : 100}
                 height={isMobile ? 30 : 60}
                 priority
-                className="transition-transform lg:w-[120px] lg:h-[60px] w-[60px] h-[30px]"
+                className="transition-transform lg:w-[100px] lg:h-[60px] w-[50px] h-[30px]"
               />
             </motion.div>
           </Link>

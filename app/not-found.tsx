@@ -5,55 +5,16 @@ import { motion } from "framer-motion";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col min-h-screen relative">
-      <header className="w-full py-6 px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <nav className="flex items-center space-x-4">
-            <Link href="/" className="nav-link">
-              HOME
-            </Link>
-            <Link href="/mint" className="nav-link">
-              MINT
-            </Link>
-            <Link href="/reveal" className="nav-link">
-              REVEAL
-            </Link>
-            <Link href="/collection" className="nav-link">
-              COLLECTION
-            </Link>
-          </nav>
-
-          <div className="absolute left-1/2 -translate-x-1/2">
-            <Link href="/" className="flex items-center justify-center">
-              <h1 className="text-4xl font-bold text-foreground tracking-wider">
-                <span className="font-rajdhani uppercase tracking-widest">
-                  Hydros
-                </span>
-              </h1>
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <span className="text-muted-foreground font-rajdhani uppercase">
-              OXHYROX.HL
-            </span>
-            <div className="bg-secondary/50 backdrop-blur-md px-3 py-1 rounded-full flex items-center space-x-1">
-              <span className="text-primary font-rajdhani">12.2</span>
-              <span className="text-foreground">🔸</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 flex items-center justify-center">
+    <div className="flex justify-center items-center ">
+      <main className="flex justify-center items-center w-full">
         <motion.div
-          className="text-center px-4"
+          className="flex flex-col justify-center items-center px-4 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <motion.h1
-            className="hydros-title text-7xl mb-4 text-primary"
+            className="text-center text-7xl mb-4 text-primary"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{

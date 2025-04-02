@@ -40,13 +40,9 @@ const CircularProgress = React.forwardRef<
       <ProgressPrimitive.Root
         ref={ref}
         className={cn("relative overflow-hidden", className)}
-        style={{
-          width: size,
-          height: size,
-        }}
         {...props}
       >
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`}>
           {/* Background track */}
           <circle
             cx={size / 2}

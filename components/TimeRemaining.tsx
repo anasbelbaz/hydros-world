@@ -37,7 +37,7 @@ export default function TimeRemaining({
   }, [startTime]);
 
   return (
-    <div className="relative z-10 ">
+    <div className="relative z-10 font-herculanum">
       <div
         className={
           small

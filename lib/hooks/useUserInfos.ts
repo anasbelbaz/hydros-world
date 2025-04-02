@@ -26,7 +26,7 @@ export const generateMerkleProof = (
 
     // Create Merkle tree
     const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-
+    console.log("0x", merkleTree.getRoot().toString("hex"));
     // Generate proof for the given address
     const leaf = keccak256(address.toLowerCase() as `0x${string}`);
     const proof = merkleTree.getHexProof(leaf);

@@ -150,6 +150,8 @@ export function useSaleInfoTestnet() {
         const priceStep =
           numIntervals > 0 ? startPrice / numIntervals : BigInt(0);
 
+        console.log({ phase });
+
         return {
           currentPhase: phase,
           whitelistSaleConfig: {

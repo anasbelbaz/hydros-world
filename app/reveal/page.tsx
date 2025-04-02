@@ -12,7 +12,7 @@ import { useReveal } from "@/lib/hooks/useReveal";
 import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 import { NFTMetadata } from "@/lib/types";
 import RevealDialog from "@/components/RevealDialog";
-import { mockRevealedNFTs } from "./utils";
+// import { mockRevealedNFTs } from "./utils";
 
 export default function RevealPage() {
   const [revealAmount, setRevealAmount] = useState(1);
@@ -23,20 +23,8 @@ export default function RevealPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [revealedTokenIds, setRevealedTokenIds] = useState<number[]>([]);
 
-  // TESTING ONLY
-
-  const [currentNFT, setCurrentNFT] = useState<NFTMetadata | null>(
-    mockRevealedNFTs[0]
-  );
-  const [revealedNFTs, setRevealedNFTs] =
-    useState<NFTMetadata[]>(mockRevealedNFTs);
-  React.useEffect(() => {
-    setTimeout(() => {
-      setDialogOpen(true);
-    }, 2000);
-  }, []);
-
-  // END TESTING ONLY
+  const [currentNFT, setCurrentNFT] = useState<NFTMetadata | null>(null);
+  const [revealedNFTs, setRevealedNFTs] = useState<NFTMetadata[]>([]);
 
   // Get the reveal hook
   const { executeReveal, isLoading, getTokenURI, isTokenRevealed } =
@@ -392,9 +380,9 @@ export default function RevealPage() {
                 </div>
 
                 <motion.div
-                whileHover={{ scale: 0.95 }}
-                whileTap={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                  whileHover={{ scale: 0.95 }}
+                  whileTap={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 600, damping: 20 }}
                   className="w-full max-w-[300px]"
                 >
                   <Button
@@ -408,13 +396,13 @@ export default function RevealPage() {
                     className="relative overflow-hidden group p-5 w-[300px] h-[90px] rounded-[90px] text-[16px]"
                   >
                     <span className="z-10 flex items-center gap-2">
-                    {!isRevealEnabled
-                      ? "Reveal not enabled"
-                      : isRevealing
-                      ? "Revealing..."
-                      : `Reveal ${revealAmount} Hydros`}
-                      </span>
-                      <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                      {!isRevealEnabled
+                        ? "Reveal not enabled"
+                        : isRevealing
+                        ? "Revealing..."
+                        : `Reveal ${revealAmount} Hydros`}
+                    </span>
+                    <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
                   </Button>
                 </motion.div>
 

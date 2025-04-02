@@ -251,6 +251,12 @@ export default function MintPage() {
     }
   };
 
+  console.log(saleInfo?.currentPhase);
+
+  if (saleInfo?.currentPhase === PHASE_INACTIVE) {
+    return <AuctionNotStarted />;
+  }
+
   if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
     return <AuctionNotStarted />;
   }
@@ -309,7 +315,8 @@ export default function MintPage() {
                             ease: "easeInOut",
                           }}
                         >
-                          {saleInfo?.currentPhase === PHASE_WHITELIST
+                          {saleInfo?.currentPhase === PHASE_WHITELIST ||
+                          saleInfo?.isAuctionEnded
                             ? "Fetching price..."
                             : "Fetching new price..."}
                         </motion.span>
@@ -528,7 +535,8 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
       isWhitelistPhase ||
       isFinishedPhase ||
       isInactivePhase ||
-      !nextUpdateTimestamp
+      !nextUpdateTimestamp ||
+      saleInfo?.isAuctionEnded
     )
       return;
 
@@ -560,6 +568,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
 
     return () => clearInterval(interval);
   }, [
+    saleInfo?.isAuctionEnded,
     nextUpdateTimestamp,
     isWhitelistPhase,
     refetch,
@@ -737,7 +746,15 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                 </>
               ) : undefined}
 
-              {isAuctionPhase ? (
+              {saleInfo?.isAuctionEnded ? (
+                <>
+                  <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
+                    RESERVE PRICE REACHED
+                  </h3>
+                </>
+              ) : undefined}
+
+              {isAuctionPhase && !saleInfo?.isAuctionEnded ? (
                 <>
                   <h3 className="font-herculanum text-white mb-0.5 sm:mb-1">
                     NEXT PRICE IN
@@ -760,14 +777,6 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                 </>
               ) : undefined}
 
-              {isFinishedPhase || isInactivePhase ? (
-                <>
-                  <h3 className="font-herculanum text-white text-lg sm:text-xl mb-0.5 sm:mb-1">
-                    RESERVE PRICE REACHED
-                  </h3>
-                </>
-              ) : undefined}
-
               <div className="w-24 sm:w-32 h-px bg-primary/30 my-2 sm:my-3"></div>
 
               <p className="font-herculanum text-white text-base sm:text-lg mb-0.5 sm:mb-1">
@@ -779,7 +788,7 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
                   ? "Loading..."
                   : `${saleInfo?.maxSupply - saleInfo?.totalSupply}`}
               </p>
-              {saleInfo?.currentPhase === PHASE_AUCTION ? (
+              {isAuctionPhase && !saleInfo?.isAuctionEnded ? (
                 <div className="flex flex-col items-center justify-center !pt-5">
                   <span className="font-herculanum text-white mb-0.5 sm:mb-1">
                     ENDS IN

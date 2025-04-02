@@ -431,17 +431,19 @@ export default function RevealPage() {
           </div>
         </div>
       </div>
-      <RevealDialog
-        navigateToPrev={navigateToPrev}
-        navigateToNext={navigateToNext}
-        canNavigatePrev={canNavigatePrev}
-        canNavigateNext={canNavigateNext}
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        revealedNFTs={revealedNFTs}
-        currentNFT={currentNFT}
-        setCurrentNFT={setCurrentNFT}
-      />
+      {currentNFT && dialogOpen && (
+        <RevealDialog
+          navigateToPrev={navigateToPrev}
+          navigateToNext={navigateToNext}
+          canNavigatePrev={canNavigatePrev}
+          canNavigateNext={canNavigateNext}
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          revealedNFTs={revealedNFTs}
+          currentNFT={currentNFT}
+          setCurrentNFT={setCurrentNFT}
+        />
+      )}
     </>
   );
 }

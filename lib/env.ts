@@ -79,7 +79,7 @@ export const ENV = {
   // NFT related
   HYDROS_NFT_ADDRESS: getEnv(
     "NEXT_PUBLIC_HYDROS_NFT_ADDRESS",
-    "0x134E2897057AA2e24E35cf3BFee0b02baEFA633b"
+    "0x79010d61287Cc4E0e386e63F6C33934888Ec05FE"
   ),
 
   // Network related

@@ -28,6 +28,7 @@ export interface ExtendedSalesInfo extends SalesInfo {
   currentPrice: bigint;
   priceUpdateInterval: bigint;
   auctionEndTime: bigint;
+  isAuctionEnded: boolean;
   unrevealedTokens: bigint[]; // Array of unrevealed token IDs
 }
 
@@ -150,8 +151,8 @@ export function useSaleInfoTestnet() {
         const priceStep =
           numIntervals > 0 ? startPrice / numIntervals : BigInt(0);
 
-        console.log({ phase });
-
+        const isAuctionEnded =
+          new Date(Number(auctionEndTime) * 1000) < new Date();
         return {
           currentPhase: phase,
           whitelistSaleConfig: {
@@ -168,6 +169,7 @@ export function useSaleInfoTestnet() {
             duration: auctionConfig[3],
             maxPerWallet: auctionConfig[4],
           },
+          isAuctionEnded,
           auctionEndTime: auctionEndTime,
           maxSupply: maxSupplyResult as bigint,
           totalSupply: totalSupplyResult as bigint,

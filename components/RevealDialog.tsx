@@ -4,6 +4,9 @@ import { Button } from "./ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useSaleInfoTestnet } from "@/lib/hooks/useSaleInfoTestnet";
 
 type NFT = {
   id: number;
@@ -35,6 +38,11 @@ export default function RevealDialog({
   canNavigatePrev,
   canNavigateNext,
 }: RevealDialogProps) {
+  const pathname = usePathname();
+
+  const { data: saleInfo } = useSaleInfoTestnet();
+  const unrevealedTokens = saleInfo?.unrevealedTokens;
+
   // Check if there's only one NFT
   const isSingleNFT = revealedNFTs.length === 1;
   const [fadeClass, setFadeClass] = useState("");
@@ -192,7 +200,7 @@ export default function RevealDialog({
                     } order-2 slider ${fadeClass}`}
                   >
                     {/* NFT Image - Left Side (Top on mobile) */}
-                    <div className="aspect-square w-full max-w-[30vh] md:max-w-[65vh] relative  order-1">
+                    <div className="aspect-square w-full max-w-[30vh] md:max-w-[60vh] relative  order-1">
                       <motion.div
                               initial={{ backgroundColor: `${rarityColor}00` }}
                               animate={{ backgroundColor: `${rarityColor}44` }}
@@ -234,7 +242,7 @@ export default function RevealDialog({
                       key={currentNFT.id}
                       initial="hidden"
                       animate="visible"
-                      className="content-slider md:aspect-square w-full max-w-[80vw] md:max-w-[65vh] bg-[#FAFAFA0D] rounded-lg flex flex-col justify-center order-2"
+                      className="content-slider md:aspect-square w-full max-w-[80vw] md:max-w-[60vh] bg-[#FAFAFA0D] rounded-lg flex flex-col justify-center order-2"
                     >
                       {currentNFT && (
                         <div className="flex flex-col text-center max-w-[400px] w-full mx-auto lg:gap-[5vh] md:gap-[4vh] gap-[3vh] px-[4vw] py-4 md:py-6 lg:py-8">
@@ -374,6 +382,55 @@ export default function RevealDialog({
               </div>
             )}
           </div>
+          {pathname === "/collection" && 
+          <Button
+          onClick={() => setDialogOpen(false)}
+          className="bg-[#98FCE433]/20 hover:bg-[#98FCE433]/40 mb-[2vh] backdrop-blur-xl w-fit mx-auto relative rounded-full px-6 py-2 md:px-8 md:py-6 font-herculanum text-sm md:text-base"
+        >
+          <span className="absolute w-6 h-[2px] bg-white rounded-full transform rotate-45"></span>
+          <span className="absolute w-6 h-[2px] bg-white rounded-full transform -rotate-45"></span>
+        </Button>
+          }
+          {pathname === "/reveal" &&
+          <div className="flex w-fit mx-auto my-[2vh] gap-3">
+            <motion.div
+                    whileHover={{ scale: 0.95 }}
+                    whileTap={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                    className="w-fit mx-auto"
+                  >
+                <Link
+                  href='/mint'
+                  className='w-fit mx-auto'
+                >
+                  <Button className="relative overflow-hidden group">
+                  <span className="z-10 flex items-center gap-2">
+                  Mint More Hydros
+                    </span>
+                    <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-white min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                  </Button>
+                </Link>
+              </motion.div>
+
+            <motion.div
+                  whileHover={{ scale: 0.95 }}
+                  whileTap={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                  className="w-fit mx-auto"
+                >
+                <Button onClick={() => setDialogOpen(false)} className="relative overflow-hidden group bg-[#98FCE422] hover:bg-[#98FCE422] backdrop-blur-lg text-white border border-[#98FCE4]">
+                <span className="z-10 flex items-center gap-2">
+                    Reveal With Aqualium { unrevealedTokens?.length > 0 && (
+                <span className="text-teal-50 font-herculanum text-[16px] bg-teal-500/30 px-3 py-1 -my-2 rounded-full ">
+                  {unrevealedTokens?.length}
+                </span>
+              )}
+                  </span>
+                  <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-[#98FCE4] min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                </Button>
+            </motion.div>
+          </div> 
+          }
 
           {/* <div className="flex justify-center mt-4 md:mt-6">
           <Button

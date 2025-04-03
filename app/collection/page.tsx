@@ -126,7 +126,7 @@ export default function CollectionPage() {
 
   return (
     <ClientOnly>
-      <div className="w-full mx-auto  max-w-7xl px-4 pt-5 pb-2">
+      <div className="w-full mx-auto max-w-[100rem] px-[3vw] pt-5 pb-2">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

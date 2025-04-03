@@ -126,7 +126,7 @@ export default function CollectionPage() {
 
   return (
     <ClientOnly>
-      <div className="w-full mx-auto  max-w-7xl px-4 pt-5 pb-2">
+      <div className="w-full mx-auto max-w-7xl px-4 pt-5 pb-2">
         <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -177,10 +177,29 @@ export default function CollectionPage() {
               <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
           ) : ownedTokens.length === 0 ? (
-            <div className="price-table px-4 py-2 text-center">
-              <p className="text-muted-foreground mb-8">
-                You don&apos;t own any Hydros NFTs yet.
+            <div className="px-4 py-2 mt-[12vh] text-center w-max-w-[400px] mx-auto">
+              <p className="text-muted-foreground font-herculanum mb-8">
+                You currently own no Hydros
               </p>
+              
+              <motion.div
+                    whileHover={{ scale: 0.95 }}
+                    whileTap={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 20 }}
+                    className="w-fit mx-auto"
+                  >
+                <Link
+                  href='/mint'
+                  className='w-fit mx-auto'
+                >
+                  <Button className="relative overflow-hidden group bg-[#98FCE422] hover:bg-[#98FCE422] backdrop-blur-lg text-white border border-[#98FCE4]">
+                  <span className="z-10 flex items-center gap-2">
+                    Mint your hydros now
+                    </span>
+                    <div className="group-hover:scale-100 opacity-40 transition-transform duration-500 absolute transform scale-0 bg-[#98FCE4] min-h-full min-w-full aspect-square rounded-full inset-0 m-auto"></div>
+                  </Button>
+                </Link>
+              </motion.div>
             </div>
           ) : (
             <>

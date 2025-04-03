@@ -36,7 +36,7 @@ export function useMint() {
     const unitPrice =
       saleInfo.currentPhase === PHASE_WHITELIST
         ? saleInfo.whitelistSaleConfig.price
-        : saleInfo.auctionSaleConfig.price;
+        : saleInfo.currentPrice;
 
     return unitPrice * BigInt(quantity);
   };

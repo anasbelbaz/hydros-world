@@ -12,13 +12,12 @@ import { publicClient } from "../client";
 const HydrosNFTSaleABI = parseAbi([
   "function getCurrentPhase() view returns (uint8)",
   "function whitelistSaleConfig() view returns (uint256 price, uint256 startTime, uint256 duration, uint256 maxPerWallet, uint256 maxSupply)",
-  "function auctionSaleConfig() view returns (uint256 price, uint256 floorPrice, uint256 startTime, uint256 duration, uint256 maxPerWallet)",
+  "function auctionSaleConfig() view returns (uint256 price, uint256 floorPrice, uint256 startTime, uint256 duration, uint256 maxPerWallet, uint256 priceUpdateInterval)",
   "function MAX_SUPPLY() view returns (uint256)",
   "function totalSupply() view returns (uint256)",
   "function transfersEnabled() view returns (bool)",
   "function revealEnabled() view returns (bool)",
   "function getCurrentPrice() view returns (uint256)",
-  "function PRICE_UPDATE_INTERVAL() view returns (uint256)",
   "function getUnrevealedTokens(address owner) external view returns (uint256[] memory)",
 ]) as Abi;
 
@@ -47,6 +46,8 @@ export function useSaleInfoTestnet() {
           functionName: "getCurrentPhase",
         });
 
+        console.log("currentPhaseResult", currentPhaseResult);
+
         const getUnrevealedTokensResult = address
           ? ((await publicClient.readContract({
               address: HYDROS_CONTRACT_ADDRESS,
@@ -63,12 +64,16 @@ export function useSaleInfoTestnet() {
           functionName: "whitelistSaleConfig",
         });
 
+        console.log("whitelistSaleConfigResult", whitelistSaleConfigResult);
+
         // 3. Get auction sale config
         const auctionSaleConfigResult = await publicClient.readContract({
           address: HYDROS_CONTRACT_ADDRESS,
           abi: HydrosNFTSaleABI,
           functionName: "auctionSaleConfig",
         });
+
+        console.log("auctionSaleConfigResult", auctionSaleConfigResult);
 
         // 4. Get max supply
         const maxSupplyResult = await publicClient.readContract({
@@ -105,13 +110,6 @@ export function useSaleInfoTestnet() {
           functionName: "getCurrentPrice",
         });
 
-        // 9. Get price update interval
-        const priceUpdateIntervalResult = await publicClient.readContract({
-          address: HYDROS_CONTRACT_ADDRESS,
-          abi: HydrosNFTSaleABI,
-          functionName: "PRICE_UPDATE_INTERVAL",
-        });
-
         // Cast the phase to SalePhase type
         const phase = Number(currentPhaseResult) as SalePhase;
         const unrevealedTokens = getUnrevealedTokensResult as bigint[];
@@ -130,17 +128,15 @@ export function useSaleInfoTestnet() {
           bigint,
           bigint,
           bigint,
+          bigint,
           bigint
         ];
 
-        console.log("auctionConfig", auctionConfig);
-        console.log("wlConfig", wlConfig);
         // Calculate the price step based on the auction config and price update interval
         // From the contract: price decreases linearly over time
         const startPrice = auctionConfig[0];
         const duration = auctionConfig[2];
-        const priceUpdateInterval = priceUpdateIntervalResult as bigint;
-
+        const priceUpdateInterval = auctionConfig[5] as bigint;
         const auctionEndTime = auctionConfig[2] + auctionConfig[3];
 
         // Calculate number of intervals in the auction duration
@@ -153,6 +149,7 @@ export function useSaleInfoTestnet() {
 
         const isAuctionEnded =
           new Date(Number(auctionEndTime) * 1000) < new Date();
+
         return {
           currentPhase: phase,
           whitelistSaleConfig: {
@@ -178,7 +175,7 @@ export function useSaleInfoTestnet() {
           // Additional fields
           priceStep: priceStep,
           currentPrice: currentPriceResult as bigint,
-          priceUpdateInterval: priceUpdateIntervalResult as bigint,
+          priceUpdateInterval: priceUpdateInterval,
           unrevealedTokens,
         };
       } catch (error) {

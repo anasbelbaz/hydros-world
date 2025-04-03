@@ -256,6 +256,10 @@ export default function MintPage() {
     return <AuctionEnded />;
   }
 
+  if (saleInfo?.currentPhase === PHASE_INACTIVE) {
+    return <AuctionNotStarted />;
+  }
+
   if (!userInfos?.isWhitelisted && saleInfo?.currentPhase === PHASE_WHITELIST) {
     return <AuctionNotStarted />;
   }
@@ -562,8 +566,6 @@ function Timer({ getNftLeftPercentage, saleInfo, refetch }: TimerProps) {
             nextUpdateTimestamp + Number(saleInfo.priceUpdateInterval);
           setNextUpdateTimestamp(nextTimestamp);
         }
-      } else {
-        refetch();
       }
     }, 1000);
 
